@@ -19,7 +19,7 @@ export const FIREBASE_CONFIG = {
 
 /* Gmail address(es) of the organizer(s). Must match firestore.rules.
    This list only decides which buttons the page shows; the rules decide who may write. */
-export const ADMIN_EMAILS = [];
+export const ADMIN_EMAILS = ["krishnachaitanyareddykothakapu@gmail.com"];
 
 /* The Apps Script web app URL that sends the emails (see docs/SETUP.md). Empty = demo outbox only. */
 export const MAIL_ENDPOINT = "";
