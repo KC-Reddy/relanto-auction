@@ -237,7 +237,7 @@ function renderRegs() {
     select.value = picked[r.id] || categoryForSkill(r.skill);
     select.addEventListener("change", () => { picked[r.id] = select.value; });
 
-    const approveBtn = h("button", { class: "btn btn-primary btn-small", type: "button", text: "Approve" });
+    const approveBtn = h("button", { class: "btn btn-approve btn-small", type: "button", text: "Approve" });
     approveBtn.addEventListener("click", () => guarded(async () => {
       approveBtn.disabled = true;
       const out = await engine.approve(r.id, select.value);
@@ -462,3 +462,5 @@ function wireDemo() {
   twoStep($("btn-wipe"), "Confirm wipe", async () => { await store.wipe(); sig.regs = sig.players = ""; formFilled = false; clearOutbox(); toast("Demo data wiped"); });
   twoStep($("btn-reset"), "Confirm reset", () => guarded(async () => { await engine.resetAuction(); secondRound = false; toast("Auction reset"); }));
 }
+
+import("./page-motion.js").then((m) => m.enhance()).catch(() => {});

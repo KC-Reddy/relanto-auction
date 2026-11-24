@@ -66,3 +66,4 @@ $("csv").addEventListener("click", () => {
   a.remove();
   URL.revokeObjectURL(url);
 });
+import("./page-motion.js").then((m) => m.enhance({ lenis: true })).catch(() => {});

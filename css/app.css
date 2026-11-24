@@ -168,3 +168,4 @@ body.screen { background-attachment: fixed; }
 .desk .bid-who { font-size: 1rem; font-weight: 700; letter-spacing: 0.02em; }
 .desk .bid-amt { font-size: clamp(1.6rem, 1.2rem + 2vw, 2.6rem); line-height: 1; }
 @media (max-width: 600px) { .desk-row { grid-template-columns: 1fr; } }
+.squad li.empty { display: block; color: var(--chalk-dim); border-bottom: 0; }

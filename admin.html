@@ -10,11 +10,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    /* Hide-until-animated styles apply only when motion is wanted; if scripts fail, show everything. */
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.documentElement.classList.add("motion");
+      setTimeout(function () { if (!window.__motionReady) document.documentElement.classList.remove("motion"); }, 4500);
+    }
+  </script>
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/forms.css">
   <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/motion.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -77,7 +85,7 @@
             <label class="switch" id="auto-hammer-wrap"><input type="checkbox" id="auto-hammer" checked> Hammer automatically when the clock ends</label>
           </div>
           <div class="teams-strip" id="teams" style="margin-top: var(--space-3)"></div>
-          <p class="hint" style="margin-top: var(--space-2)">Keep this tab open during the auction. It runs the automatic hammer and sends the sold emails.</p>
+          <p class="hint" style="margin-top: var(--space-2)">Keep this tab open during the auction. It sends the sold emails. To show the captains, share the Live board (screen.html) window in Teams, not this one.</p>
         </section>
 
         <!-- REGISTRATIONS -->

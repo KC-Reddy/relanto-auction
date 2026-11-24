@@ -177,15 +177,21 @@ form.addEventListener("submit", async (e) => {
 
 function finish(clean, silent, demo = false, mail = null) {
   form.hidden = true;
+  const noMail = !mail || mail.demo;
   $("done-text").textContent = silent
     ? "Thanks."
-    : `Thanks ${clean.name.split(" ")[0]}. Your employee ID ${clean.empId} is on the list and a confirmation is on its way to ${clean.email}.`;
+    : noMail
+      ? `Thanks ${clean.name.split(" ")[0]}. Your employee ID ${clean.empId} is on the list.`
+      : `Thanks ${clean.name.split(" ")[0]}. Your employee ID ${clean.empId} is on the list and a confirmation is on its way to ${clean.email}.`;
   if (!silent && mail && !mail.ok) {
     $("done-demo").hidden = false;
     $("done-demo").textContent = "Your entry is saved, but the confirmation email could not be sent. The organizers can resend it.";
   } else if (demo) {
     $("done-demo").hidden = false;
     $("done-demo").textContent = "Demo mode: the email was added to the demo outbox in the organizer page.";
+  } else if (mail && mail.demo) {
+    $("done-demo").hidden = false;
+    $("done-demo").textContent = "Email is not switched on yet, so no confirmation was sent. The organizers will contact you when you are approved.";
   }
   $("done").hidden = false;
   $("done").querySelector("h2").setAttribute("tabindex", "-1");
@@ -210,3 +216,4 @@ function showClosed() {
   }
 })();
 
+import("./page-motion.js").then((m) => m.enhance()).catch(() => {});

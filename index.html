@@ -10,10 +10,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    /* Hide-until-animated styles apply only when motion is wanted; if scripts fail, show everything. */
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.documentElement.classList.add("motion");
+      setTimeout(function () { if (!window.__motionReady) document.documentElement.classList.remove("motion"); }, 4500);
+    }
+  </script>
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/lenis.css">
+  <link rel="stylesheet" href="css/motion.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -43,15 +52,15 @@
       <div class="wrap hero-grid">
         <div class="hero-copy">
           <h1>Relanto Auction</h1>
-          <p class="lede">Twenty-five players, two captains, ₹30 lakh each. Register, wait for the hammer, and find out your team by email.</p>
-          <div class="hero-actions">
+          <p class="lede" data-reveal>Twenty-five players, two captains, ₹30 lakh each. Register, wait for the hammer, and find out your team by email.</p>
+          <div class="hero-actions" data-reveal>
             <a class="btn btn-primary" href="register.html">Register as a player</a>
             <a class="btn btn-quiet" href="#rules">Read the rules</a>
           </div>
-          <p class="when" id="when">Auction date to be announced.</p>
+          <p class="when" id="when" data-reveal>Auction date to be announced.</p>
         </div>
 
-        <aside class="board" aria-label="Auction at a glance">
+        <aside class="board" aria-label="Auction at a glance" data-reveal>
           <h2 class="board-title">Auction board</h2>
           <dl>
             <div class="board-row">
@@ -75,29 +84,52 @@
       </div>
     </section>
 
-    <section class="section" id="how">
-      <div class="wrap">
-        <div class="section-head">
+    <div class="ticker-wrap" aria-label="How bids rise">
+      <div class="ticker">
+        <div class="ticker-track" id="ticker-track">
+          <span>Every player starts at ₹1,50,000</span>
+          <span>Raise ₹25,000 below ₹4,00,000</span>
+          <span>Raise ₹50,000 from ₹4,00,000</span>
+          <span>Raise ₹1,00,000 from ₹6,00,000</span>
+          <span>Raise ₹2,00,000 from ₹10,00,000</span>
+          <span>Only the two captains bid</span>
+        </div>
+      </div>
+    </div>
+
+    <section class="section over" id="how">
+      <div class="over-pin">
+        <div class="wrap section-head">
           <h2>Four steps to a team</h2>
         </div>
-        <ol class="steps">
-          <li>
-            <h3>Register</h3>
-            <p>Add your name, email, phone and 4-digit employee ID. It takes a minute.</p>
-          </li>
-          <li>
-            <h3>Get approved</h3>
-            <p>The organizers check your entry. You get an email once you are on the list.</p>
-          </li>
-          <li>
-            <h3>Auction day</h3>
-            <p>Only the two captains bid. Everyone else watches the board update live.</p>
-          </li>
-          <li>
-            <h3>Meet your team</h3>
-            <p>When the hammer falls you get an email with your team, your price and your squad.</p>
-          </li>
-        </ol>
+        <div class="over-viewport">
+          <ol class="steps">
+            <li>
+              <h3>Register</h3>
+              <p>Add your name, email, phone and 4-digit employee ID. It takes a minute.</p>
+            </li>
+            <li>
+              <h3>Get approved</h3>
+              <p>The organizers check your entry. You get an email once you are on the list.</p>
+            </li>
+            <li>
+              <h3>Auction day</h3>
+              <p>Only the two captains bid, out loud on the call. Everyone else watches the board update live.</p>
+            </li>
+            <li>
+              <h3>Meet your team</h3>
+              <p>When the hammer falls you get an email with your team, your price and your squad.</p>
+            </li>
+          </ol>
+        </div>
+        <div class="over-lane" aria-hidden="true">
+          <div class="over-trail"></div>
+          <span class="over-stop" style="left: 1.375rem">Register</span>
+          <span class="over-stop" data-stop="1">Approved</span>
+          <span class="over-stop" data-stop="2">Auction</span>
+          <span class="over-stop" data-stop="3">Team</span>
+          <svg class="over-ball" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="#c1272d"/><path d="M5 9c7 4 7 10 0 14M27 9c-7 4-7 10 0 14" fill="none" stroke="#e8ece4" stroke-width="1.6" stroke-dasharray="2 2.4" stroke-linecap="round"/></svg>
+        </div>
       </div>
     </section>
 
@@ -107,7 +139,7 @@
           <h2>Team 1</h2>
           <dl>
             <div><dt>Captain</dt><dd>To be announced</dd></div>
-            <div><dt>Purse</dt><dd>₹30,00,000</dd></div>
+            <div><dt>Purse</dt><dd data-count="3000000">₹30,00,000</dd></div>
             <div><dt>Squad</dt><dd>11 to 13 players</dd></div>
           </dl>
         </article>
@@ -115,7 +147,7 @@
           <h2>Team 2</h2>
           <dl>
             <div><dt>Captain</dt><dd>To be announced</dd></div>
-            <div><dt>Purse</dt><dd>₹30,00,000</dd></div>
+            <div><dt>Purse</dt><dd data-count="3000000">₹30,00,000</dd></div>
             <div><dt>Squad</dt><dd>11 to 13 players</dd></div>
           </dl>
         </article>
@@ -187,6 +219,6 @@
     </div>
   </footer>
 
-  <script src="js/main.js"></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>

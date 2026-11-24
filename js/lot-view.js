@@ -4,6 +4,7 @@ import { h } from "./layout.js";
 import { inr, mmss } from "./format.js";
 import { timeLeftMs, nextBid } from "./auction-logic.js";
 import { CATEGORIES } from "./constants.js";
+import { fx, confetti } from "./motion.js";
 
 /* Turn a string like "₹2,25,000" into scoreboard tiles. Only rebuilds when the text changes. */
 export function setTiles(el, text) {
@@ -43,6 +44,7 @@ export function createLotView(root, { big = false } = {}) {
   root.append(card, idle, stamp);
 
   let flashTimer = null;
+  let seen = { playerId: null, bidCount: -1, team: "" };
   let last = { cfg: null, live: null, player: null, teams: null };
 
   function render(state) {
@@ -63,6 +65,8 @@ export function createLotView(root, { big = false } = {}) {
       return;
     }
 
+    const newPlayer = seen.playerId !== player.id;
+    const newBid = !newPlayer && live.bidCount > seen.bidCount;
     photo.style.backgroundImage = `url(${player.photo})`;
     photo.setAttribute("aria-label", `Photo of ${player.name}`);
     name.textContent = player.name;
@@ -83,6 +87,19 @@ export function createLotView(root, { big = false } = {}) {
       leader.dataset.team = "";
     }
     card.dataset.paused = live.status === "paused" ? "true" : "false";
+
+    /* motion: a new player walks on, a new bid flashes the card and slides the leader in */
+    if (newPlayer) {
+      fx.pop(photo);
+      fx.slideUp(name, 60);
+      fx.slideUp(meta, 120);
+      fx.slideUp(bid, 180, 20);
+    } else if (newBid) {
+      fx.flash(card, live.currentTeam === "team2" ? "rgba(240,176,58,0.22)" : "rgba(193,39,45,0.3)");
+      fx.pulse(bid, 1.04);
+      if (live.currentTeam !== seen.team) fx.slideIn(leader, live.currentTeam === "team1" ? "left" : "right");
+    }
+    seen = { playerId: player.id, bidCount: live.bidCount, team: live.bidCount > 0 ? live.currentTeam : "" };
     tick();
   }
 
@@ -122,6 +139,17 @@ export function createLotView(root, { big = false } = {}) {
         : h("span", { class: "stamp-line", text: "Back in the pool" }),
     );
     flashTimer = setTimeout(() => { stamp.className = "stamp"; stamp.textContent = ""; }, 4500);
+    if (result.outcome === "sold") {
+      fx.thump(root);
+      fx.slam(stamp.querySelector(".stamp-word"));
+      if (big) {
+        const x = result.team === "team2" ? window.innerWidth * 0.62 : window.innerWidth * 0.38;
+        confetti({ x, y: window.innerHeight * 0.55, count: 110, spread: 1.2, power: 1.1 });
+        confetti({ x: window.innerWidth - x, y: window.innerHeight * 0.55, count: 70, spread: 1.2 });
+      }
+    } else {
+      fx.slideUp(stamp.querySelector(".stamp-word"), 0, 24);
+    }
   }
 
   return { render, tick, flash, setClock(fn) { tick.now = fn; } };
@@ -129,15 +157,22 @@ export function createLotView(root, { big = false } = {}) {
 
 /* Two team cards: purse left and squad size. */
 export function renderTeams(root, state) {
+  let before = {};
+  try { before = JSON.parse(root.dataset.purse || "{}"); } catch { before = {}; }
+  const after = {};
   root.textContent = "";
   for (const k of ["team1", "team2"]) {
     const t = state.teams[k];
     const cfg = state.cfg;
     const count = t ? t.squad.length : 0;
+    const purse = h("p", { class: "team-chip-purse", text: t ? inr(t.purseLeft) : "..." });
+    after[k] = purse.textContent;
     root.append(h("div", { class: "team-chip", dataset: { team: k } },
       h("p", { class: "team-chip-name", text: cfg.teamNames[k] }),
-      h("p", { class: "team-chip-purse", text: t ? inr(t.purseLeft) : "..." }),
+      purse,
       h("p", { class: "team-chip-sub", text: `${count} of ${cfg.minSquad} to ${cfg.maxSquad} players` }),
     ));
+    if (before[k] && before[k] !== after[k]) fx.pulse(purse, 1.08);
   }
+  root.dataset.purse = JSON.stringify(after);
 }

@@ -98,3 +98,6 @@ function initWhen() {
 
 initBoard();
 initWhen();
+
+/* ---------- Motion (scroll animation, headline reveals) ---------- */
+import("./home-motion.js").catch((err) => console.warn("Motion not started:", err));

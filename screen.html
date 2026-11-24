@@ -9,11 +9,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    /* Hide-until-animated styles apply only when motion is wanted; if scripts fail, show everything. */
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.documentElement.classList.add("motion");
+      setTimeout(function () { if (!window.__motionReady) document.documentElement.classList.remove("motion"); }, 4500);
+    }
+  </script>
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/forms.css">
   <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/motion.css">
 </head>
 <body class="screen">
   <main class="wrap screen-wrap" id="main">
