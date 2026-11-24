@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Captain room | Relanto Auction</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0f2a22">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header id="site-header"></header>
+
+  <main id="main" class="page">
+    <div class="wrap">
+      <div class="app-top">
+        <div>
+          <h1>Captain room</h1>
+          <p class="who" id="who"></p>
+        </div>
+        <button class="btn btn-quiet btn-small" id="signout" hidden>Sign out</button>
+      </div>
+
+      <section class="panel signin" id="signin" hidden>
+        <h2>Sign in</h2>
+        <p class="sub" id="signin-text"></p>
+        <div class="panel-row" id="signin-buttons"></div>
+        <p class="field-error" id="signin-error" style="margin-top: var(--space-2)"></p>
+      </section>
+
+      <section class="panel signin" id="denied" hidden>
+        <h2>You are not a captain</h2>
+        <p class="sub" id="denied-text"></p>
+      </section>
+
+      <div id="room" hidden>
+        <div class="panel">
+          <div id="lot"></div>
+          <div class="bid-zone">
+            <button class="btn btn-primary bid-btn" id="bid-btn" disabled>Waiting for a player</button>
+            <p class="bid-why" id="bid-why" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div>
+            <h2 class="visually-hidden">Teams</h2>
+            <div class="teams-strip" id="teams"></div>
+          </div>
+          <section class="panel" aria-labelledby="h-squad">
+            <h2 id="h-squad">Your squad</h2>
+            <p class="sub" id="squad-sub"></p>
+            <ul class="squad" id="squad"></ul>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+  <footer id="site-footer"></footer>
+  <script type="module" src="js/captain.js"></script>
+</body>
+</html>

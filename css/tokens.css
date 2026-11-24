@@ -1,0 +1,37 @@
+/* Design tokens. Every color, size and font in the site comes from here. */
+:root {
+  /* Cricket ground palette */
+  --outfield: #0f2a22;
+  --outfield-stripe: #143328;
+  --board: #0a1613;
+  --chalk: #e8ece4;
+  --chalk-dim: #aeb9ae;
+  --ball: #c1272d;
+  --ball-deep: #9c1d22;
+  --bulb: #f0b03a;
+  --line: rgba(232, 236, 228, 0.16);
+  --line-strong: rgba(232, 236, 228, 0.34);
+
+  /* Type */
+  --font-display: "Big Shoulders Display", "Oswald", "Arial Narrow", sans-serif;
+  --font-body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --step--1: clamp(0.84rem, 0.82rem + 0.1vw, 0.9rem);
+  --step-0: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+  --step-1: clamp(1.2rem, 1.12rem + 0.4vw, 1.4rem);
+  --step-2: clamp(1.6rem, 1.4rem + 1vw, 2.2rem);
+  --step-3: clamp(2.4rem, 1.9rem + 2.5vw, 3.8rem);
+  --step-4: clamp(3.6rem, 2.4rem + 6vw, 8rem);
+
+  /* Space */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2.5rem;
+  --space-5: 4rem;
+  --space-6: 7rem;
+
+  --radius: 4px;
+  --wrap: 1180px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}

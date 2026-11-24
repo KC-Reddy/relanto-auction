@@ -1,0 +1,170 @@
+/* ---------- Hero ---------- */
+.hero { padding-block: var(--space-5) var(--space-6); }
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: var(--space-5);
+  align-items: center;
+}
+.hero-copy h1 {
+  font-size: var(--step-4);
+  line-height: 0.88;
+}
+.hero-copy .lede {
+  margin-top: var(--space-3);
+  font-size: var(--step-1);
+  line-height: 1.45;
+  color: var(--chalk);
+}
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+.when { margin-top: var(--space-3); color: var(--chalk-dim); }
+.when strong { color: var(--bulb); font-weight: 600; }
+
+/* The scoreboard: the one memorable thing on the page */
+.board {
+  background: var(--board);
+  border: 2px solid var(--line-strong);
+  border-radius: 6px;
+  padding: var(--space-3);
+  box-shadow: 0 0 0 6px rgba(10, 22, 19, 0.55);
+}
+.board-title {
+  padding-bottom: var(--space-2);
+  margin-bottom: var(--space-1);
+  border-bottom: 1px solid var(--line);
+  font-size: var(--step-1);
+  color: var(--chalk-dim);
+  letter-spacing: 0.08em;
+}
+.board-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--space-2);
+  padding-block: 0.9rem;
+  border-bottom: 1px solid var(--line);
+}
+.board-row:last-child { border-bottom: 0; }
+.board-row dt { color: var(--chalk-dim); }
+.board-row dd { font-size: clamp(2rem, 1.4rem + 2.6vw, 3.4rem); }
+
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; gap: var(--space-4); }
+}
+
+/* ---------- How it works (a true sequence, so numbered) ---------- */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+  counter-reset: step;
+}
+.steps li {
+  counter-increment: step;
+  padding-top: var(--space-2);
+  border-top: 3px solid var(--chalk);
+}
+.steps li::before {
+  content: counter(step);
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--step-3);
+  line-height: 1;
+  color: var(--bulb);
+}
+.steps h3 { font-size: var(--step-2); margin-bottom: var(--space-1); }
+.steps p { color: var(--chalk-dim); }
+@media (max-width: 900px) {
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .steps { grid-template-columns: 1fr; }
+}
+
+/* ---------- Teams: two full-width halves, one per side ---------- */
+.teams { padding-block: 0; }
+.teams-grid { display: grid; grid-template-columns: 1fr 1fr; }
+.team {
+  padding: var(--space-5) max(1.25rem, calc((100vw - var(--wrap)) / 2));
+  min-height: 24rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.team h2 { font-size: var(--step-4); line-height: 0.85; }
+.team-one { background: var(--ball); color: var(--chalk); padding-right: var(--space-4); }
+.team-two { background: var(--bulb); color: var(--board); padding-left: var(--space-4); }
+/* inner edges align to the content column */
+.team-one { padding-left: max(1.25rem, calc((100vw - var(--wrap)) / 2)); }
+.team-two { padding-right: max(1.25rem, calc((100vw - var(--wrap)) / 2)); }
+.team dl { display: grid; gap: var(--space-1); }
+.team dt { font-size: var(--step--1); opacity: 0.8; }
+.team dd { font-size: var(--step-2); font-family: var(--font-display); font-weight: 800; line-height: 1.1; }
+@media (max-width: 760px) {
+  .teams-grid { grid-template-columns: 1fr; }
+  .team-one, .team-two { padding-inline: 1.25rem; min-height: 18rem; }
+}
+
+/* ---------- Rules ---------- */
+.rules-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+.rate-table { width: 100%; border-collapse: collapse; }
+.rate-table caption {
+  padding-bottom: var(--space-1);
+  text-align: left;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--step-1);
+  text-transform: uppercase;
+}
+.rate-table th, .rate-table td {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  font-weight: 400;
+}
+.rate-table td:last-child, .rate-table th:last-child { text-align: right; }
+.rate-table td:last-child {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--step-1);
+  color: var(--bulb);
+}
+.rate-table + .rate-table { margin-top: var(--space-4); }
+.rule-list { display: grid; gap: var(--space-3); }
+.rule-list li { padding-left: var(--space-3); border-left: 3px solid var(--ball); }
+.rule-list h3 { font-size: var(--step-1); margin-bottom: 0.25rem; }
+.rule-list p { color: var(--chalk-dim); }
+@media (max-width: 900px) {
+  .rules-grid { grid-template-columns: 1fr; gap: var(--space-4); }
+}
+
+/* ---------- Register band ---------- */
+.register-band { background: var(--board); border-block: 1px solid var(--line); }
+.register-band .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.register-band h2 { font-size: var(--step-3); }
+.register-band p { margin-top: var(--space-1); color: var(--chalk-dim); }
+
+/* ---------- Placeholder page (register.html until the form ships) ---------- */
+.stub { padding-block: var(--space-6); min-height: 60vh; }
+.stub h1 { font-size: var(--step-4); }
+.stub p { margin-top: var(--space-3); font-size: var(--step-1); color: var(--chalk-dim); }
+.stub .btn { margin-top: var(--space-4); }

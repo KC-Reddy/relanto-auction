@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Relanto Auction</title>
+  <meta name="description" content="Relanto cricket player auction. Two teams, twenty-five players, two captains with ₹30 lakh each. Register to be picked.">
+  <meta name="theme-color" content="#0f2a22">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/home.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="16" cy="16" r="14" fill="#c1272d"/>
+          <path d="M5 9c7 4 7 10 0 14M27 9c-7 4-7 10 0 14" fill="none" stroke="#e8ece4" stroke-width="1.6" stroke-dasharray="2 2.4" stroke-linecap="round"/>
+        </svg>
+        Relanto Auction
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a href="#how">How it works</a>
+        <a href="#teams">Teams</a>
+        <a href="#rules">Rules</a>
+        <a href="screen.html">Live board</a>
+        <a href="results.html">Results</a>
+        <a class="btn btn-primary btn-small" href="register.html">Register</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <h1>Relanto Auction</h1>
+          <p class="lede">Twenty-five players, two captains, ₹30 lakh each. Register, wait for the hammer, and find out your team by email.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="register.html">Register as a player</a>
+            <a class="btn btn-quiet" href="#rules">Read the rules</a>
+          </div>
+          <p class="when" id="when">Auction date to be announced.</p>
+        </div>
+
+        <aside class="board" aria-label="Auction at a glance">
+          <h2 class="board-title">Auction board</h2>
+          <dl>
+            <div class="board-row">
+              <dt>Players</dt>
+              <dd class="tiles" data-tiles="25">25</dd>
+            </div>
+            <div class="board-row">
+              <dt>Teams</dt>
+              <dd class="tiles" data-tiles="2">2</dd>
+            </div>
+            <div class="board-row">
+              <dt>Purse per team</dt>
+              <dd class="tiles" data-tiles="₹30,00,000">₹30,00,000</dd>
+            </div>
+            <div class="board-row">
+              <dt>Squad size</dt>
+              <dd class="tiles" data-tiles="11 to 13">11 to 13</dd>
+            </div>
+          </dl>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="how">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Four steps to a team</h2>
+        </div>
+        <ol class="steps">
+          <li>
+            <h3>Register</h3>
+            <p>Add your name, email, phone and 4-digit employee ID. It takes a minute.</p>
+          </li>
+          <li>
+            <h3>Get approved</h3>
+            <p>The organizers check your entry. You get an email once you are on the list.</p>
+          </li>
+          <li>
+            <h3>Auction day</h3>
+            <p>Only the two captains bid. Everyone else watches the board update live.</p>
+          </li>
+          <li>
+            <h3>Meet your team</h3>
+            <p>When the hammer falls you get an email with your team, your price and your squad.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section teams" id="teams" aria-label="The two teams">
+      <div class="teams-grid">
+        <article class="team team-one">
+          <h2>Team 1</h2>
+          <dl>
+            <div><dt>Captain</dt><dd>To be announced</dd></div>
+            <div><dt>Purse</dt><dd>₹30,00,000</dd></div>
+            <div><dt>Squad</dt><dd>11 to 13 players</dd></div>
+          </dl>
+        </article>
+        <article class="team team-two">
+          <h2>Team 2</h2>
+          <dl>
+            <div><dt>Captain</dt><dd>To be announced</dd></div>
+            <div><dt>Purse</dt><dd>₹30,00,000</dd></div>
+            <div><dt>Squad</dt><dd>11 to 13 players</dd></div>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="rules">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>How bidding works</h2>
+          <p>All amounts are fictional. Nobody pays anything.</p>
+        </div>
+        <div class="rules-grid">
+          <div>
+            <table class="rate-table">
+              <caption>Base price by category</caption>
+              <thead class="visually-hidden"><tr><th>Category</th><th>Base price</th></tr></thead>
+              <tbody>
+                <tr><td>Marquee</td><td>₹5,00,000</td></tr>
+                <tr><td>Category A</td><td>₹3,00,000</td></tr>
+                <tr><td>Category B</td><td>₹2,00,000</td></tr>
+                <tr><td>Category C</td><td>₹1,00,000</td></tr>
+              </tbody>
+            </table>
+            <table class="rate-table">
+              <caption>Each new bid adds</caption>
+              <thead class="visually-hidden"><tr><th>Current price</th><th>Raise</th></tr></thead>
+              <tbody>
+                <tr><td>Up to ₹10,00,000</td><td>₹25,000</td></tr>
+                <tr><td>Above ₹10,00,000</td><td>₹50,000</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <ul class="rule-list">
+            <li>
+              <h3>Captains only</h3>
+              <p>Two captains hold the paddles. Players and spectators follow along on the board.</p>
+            </li>
+            <li>
+              <h3>Keep enough for a full squad</h3>
+              <p>A bid is refused if it would leave the captain unable to afford the minimum squad at base prices.</p>
+            </li>
+            <li>
+              <h3>The clock resets on every bid</h3>
+              <p>When the timer runs out, the highest bidder gets the player.</p>
+            </li>
+            <li>
+              <h3>Unsold players come back</h3>
+              <p>Anyone nobody bids on returns for a second round at the end.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section register-band" aria-label="Register">
+      <div class="wrap">
+        <div>
+          <h2>Get on the list</h2>
+          <p>Registration takes a minute and you will get a confirmation email.</p>
+        </div>
+        <a class="btn btn-primary" href="register.html">Register as a player</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>Relanto Auction is an internal cricket event. All amounts shown are fictional.</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

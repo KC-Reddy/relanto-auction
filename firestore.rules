@@ -1,0 +1,77 @@
+rules_version = '2';
+
+// Replace the email below with the organizer's Google account (the same one in js/config.js ADMIN_EMAILS).
+// Add more with commas: ['a@gmail.com', 'b@gmail.com']
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function admins() { return ['krishnachaitanyareddykothakapu@gmail.com']; }
+    function signedIn() { return request.auth != null && request.auth.token.email_verified == true; }
+    function isAdmin() { return signedIn() && request.auth.token.email.lower() in admins(); }
+    function cfg() { return get(/databases/$(database)/documents/config/auction).data; }
+    function str(v, lo, hi) { return v is string && v.size() >= lo && v.size() <= hi; }
+
+    // Everyone can read what the live board needs. Emails and phones are never in these documents.
+    match /config/auction { allow read: if true; allow write: if isAdmin(); }
+    match /players/{id}   { allow read: if true; allow write: if isAdmin(); }
+    match /teams/{id}     { allow read: if true; allow write: if isAdmin(); }
+
+    // Private details. Anyone can register once (create only); only organizers can read or change.
+    match /registrations/{empId} {
+      allow read, update, delete: if isAdmin();
+      allow create: if cfg().registrationOpen == true
+        && empId.matches('^[0-9]{4}$')
+        && request.resource.data.keys().hasOnly(['name','email','phone','empId','role','batting','bowling','skill','bio','photo','status','createdAt'])
+        && request.resource.data.keys().hasAll(['name','email','phone','empId','role','batting','bowling','skill','bio','photo','status','createdAt'])
+        && request.resource.data.empId == empId
+        && request.resource.data.status == 'pending'
+        && request.resource.data.createdAt == request.time
+        && str(request.resource.data.name, 2, 60)
+        && str(request.resource.data.email, 6, 100)
+        && request.resource.data.email.matches('^[a-z0-9._%+-]+@[a-z0-9-]+([.][a-z0-9-]+)*[.][a-z]{2,}$')
+        && request.resource.data.phone is string
+        && request.resource.data.phone.matches('^[6-9][0-9]{9}$')
+        && request.resource.data.role in ['Batter','Bowler','All-rounder','Wicketkeeper']
+        && request.resource.data.batting in ['Right hand','Left hand']
+        && request.resource.data.bowling in ['Does not bowl','Right-arm pace','Left-arm pace','Right-arm spin','Left-arm spin']
+        && request.resource.data.skill is int && request.resource.data.skill >= 1 && request.resource.data.skill <= 5
+        && request.resource.data.bio is string && request.resource.data.bio.size() <= 140
+        && request.resource.data.photo is string && request.resource.data.photo.size() <= 150000
+        && request.resource.data.photo.matches('^data:image/jpeg;base64,.*');
+    }
+
+    match /auction/live {
+      allow read: if true;
+      allow create, delete: if isAdmin();
+
+      // Organizers change anything. Captains may only place a valid next bid.
+      allow update: if isAdmin() || validBid();
+
+      function validBid() {
+        let before = resource.data;
+        let after = request.resource.data;
+        let c = cfg();
+        let team = after.currentTeam;
+        let teamDoc = get(/databases/$(database)/documents/teams/$(team)).data;
+        let step = before.currentBid <= 1000000 ? 25000 : 50000;
+        let amount = before.bidCount == 0 ? before.baseBid : before.currentBid + step;
+        return signedIn()
+          && (team == 'team1' || team == 'team2')
+          && c.captains[team].lower() == request.auth.token.email.lower()
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['currentBid','currentTeam','bidCount','lastBidAt'])
+          && before.status == 'live'
+          && before.currentTeam != team
+          && after.currentBid == amount
+          && after.bidCount == before.bidCount + 1
+          && after.lastBidAt == request.time
+          && request.time <= before.lastBidAt + duration.value(c.lotSeconds, 's')
+          && teamDoc.squad.size() < c.maxSquad
+          && teamDoc.purseLeft >= amount
+          && teamDoc.purseLeft - amount >= (c.minSquad > teamDoc.squad.size() + 1 ? (c.minSquad - teamDoc.squad.size() - 1) * 100000 : 0);
+      }
+    }
+
+    match /{other=**} { allow read, write: if false; }
+  }
+}

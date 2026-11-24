@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Results | Relanto Auction</title>
+  <meta name="theme-color" content="#0f2a22">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header id="site-header"></header>
+
+  <main id="main" class="page">
+    <div class="wrap">
+      <div class="app-top">
+        <div>
+          <h1>Results</h1>
+          <p class="who" id="progress"></p>
+        </div>
+        <button class="btn btn-quiet btn-small" id="csv" type="button">Download CSV</button>
+      </div>
+
+      <div class="results-grid" id="teams"></div>
+
+      <section class="panel" style="margin-top: var(--space-4)" aria-labelledby="h-unsold">
+        <h2 id="h-unsold">Unsold players</h2>
+        <ul class="squad" id="unsold"></ul>
+      </section>
+    </div>
+  </main>
+
+  <footer id="site-footer"></footer>
+  <script type="module" src="js/results.js"></script>
+</body>
+</html>

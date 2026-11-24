@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Organizer | Relanto Auction</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0f2a22">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header id="site-header"></header>
+
+  <main id="main" class="page">
+    <div class="wrap">
+
+      <div class="app-top">
+        <div>
+          <h1>Organizer</h1>
+          <p class="who" id="who"></p>
+        </div>
+        <button class="btn btn-quiet btn-small" id="signout" hidden>Sign out</button>
+      </div>
+
+      <section class="panel signin" id="signin" hidden>
+        <h2>Sign in</h2>
+        <p class="sub" id="signin-text"></p>
+        <button class="btn btn-primary" id="signin-btn">Sign in</button>
+        <p class="field-error" id="signin-error" style="margin-top: var(--space-2)"></p>
+      </section>
+
+      <section class="panel signin" id="denied" hidden>
+        <h2>This account is not an organizer</h2>
+        <p class="sub" id="denied-text"></p>
+      </section>
+
+      <div id="admin" hidden>
+        <nav class="subnav" aria-label="Organizer sections">
+          <a href="#sec-live">Live control</a>
+          <a href="#sec-regs">Registrations</a>
+          <a href="#sec-players">Players</a>
+          <a href="#sec-setup">Setup</a>
+          <a href="#sec-mail">Emails</a>
+          <a href="#sec-danger">Reset</a>
+        </nav>
+
+        <!-- LIVE CONTROL -->
+        <section class="panel" id="sec-live" aria-labelledby="h-live">
+          <h2 id="h-live">Live control</h2>
+          <p class="sub" id="live-sub"></p>
+          <div id="lot"></div>
+          <div class="panel-row" style="margin-top: var(--space-3)" id="controls">
+            <button class="btn btn-primary" id="btn-next">Next player</button>
+            <select class="select" id="pick-player" style="width:auto" aria-label="Pick a specific player"></select>
+            <button class="btn btn-quiet" id="btn-pick">Put on the block</button>
+            <button class="btn btn-primary" id="btn-hammer" hidden>Hammer</button>
+            <button class="btn btn-quiet" id="btn-pause" hidden>Pause</button>
+            <button class="btn btn-quiet" id="btn-second" hidden>Start second round</button>
+            <label class="switch"><input type="checkbox" id="auto-hammer" checked> Hammer automatically when the clock ends</label>
+          </div>
+          <div class="teams-strip" id="teams" style="margin-top: var(--space-3)"></div>
+          <p class="hint" style="margin-top: var(--space-2)">Keep this tab open during the auction. It runs the automatic hammer and sends the sold emails.</p>
+        </section>
+
+        <!-- REGISTRATIONS -->
+        <section class="panel" id="sec-regs" aria-labelledby="h-regs">
+          <h2 id="h-regs">Registrations</h2>
+          <p class="sub">Approve a player to put them in the auction pool and send their approval email. The category sets the base price.</p>
+          <div class="tabs" id="reg-tabs" role="group" aria-label="Filter registrations"></div>
+          <div class="table-wrap"><table class="table" id="reg-table"></table></div>
+        </section>
+
+        <!-- PLAYERS -->
+        <section class="panel" id="sec-players" aria-labelledby="h-players">
+          <h2 id="h-players">Players in the auction</h2>
+          <p class="sub" id="players-sub"></p>
+          <div class="table-wrap"><table class="table" id="player-table"></table></div>
+        </section>
+
+        <!-- SETUP -->
+        <section class="panel" id="sec-setup" aria-labelledby="h-setup">
+          <h2 id="h-setup">Setup</h2>
+          <p class="sub">Team names, captains and rules. Purse and squad sizes lock once the first player is sold.</p>
+          <form id="setup-form" class="config-grid" novalidate>
+            <div class="field"><label for="c-name1">Team 1 name</label><input class="input" id="c-name1" maxlength="24"></div>
+            <div class="field"><label for="c-name2">Team 2 name</label><input class="input" id="c-name2" maxlength="24"></div>
+            <div class="field"><label for="c-cap1">Team 1 captain Gmail</label><input class="input" id="c-cap1" type="email" autocomplete="off" placeholder="captain@gmail.com"></div>
+            <div class="field"><label for="c-cap2">Team 2 captain Gmail</label><input class="input" id="c-cap2" type="email" autocomplete="off" placeholder="captain@gmail.com"></div>
+            <div class="field"><label for="c-purse">Purse per team (lakh)</label><input class="input" id="c-purse" type="number" min="1" max="1000" step="0.5"></div>
+            <div class="field"><label for="c-min">Minimum squad</label><input class="input" id="c-min" type="number" min="1" max="25"></div>
+            <div class="field"><label for="c-max">Maximum squad</label><input class="input" id="c-max" type="number" min="1" max="25"></div>
+            <div class="field"><label for="c-lot">Clock per player (seconds)</label><input class="input" id="c-lot" type="number" min="10" max="180"></div>
+            <div class="field wide"><label for="c-date">Auction date and time (India time)</label><input class="input" id="c-date" type="datetime-local" style="max-width: 20rem"></div>
+            <label class="switch wide"><input type="checkbox" id="c-open"> Registration is open</label>
+            <div class="wide panel-row">
+              <button class="btn btn-primary" type="submit">Save setup</button>
+              <span class="form-status" id="setup-status" role="status"></span>
+            </div>
+          </form>
+        </section>
+
+        <!-- EMAILS -->
+        <section class="panel" id="sec-mail" aria-labelledby="h-mail">
+          <h2 id="h-mail">Emails</h2>
+          <p class="sub" id="mail-sub"></p>
+          <div class="field" id="adminkey-field" hidden style="max-width: 26rem; margin-bottom: var(--space-3)">
+            <label for="adminkey">Mail admin key</label>
+            <input class="input" id="adminkey" type="password" autocomplete="off">
+            <p class="hint">Kept in this tab only. Needed for approval, sold and unsold emails.</p>
+          </div>
+          <div class="panel-row">
+            <button class="btn btn-quiet" id="btn-unsold-mail">Email unsold players</button>
+            <button class="btn btn-quiet" id="btn-clear-outbox" hidden>Clear demo outbox</button>
+          </div>
+          <ul class="outbox" id="outbox" style="margin-top: var(--space-3)"></ul>
+        </section>
+
+        <!-- DEMO TOOLS -->
+        <section class="panel" id="sec-demo" aria-labelledby="h-demo" hidden>
+          <h2 id="h-demo">Demo tools</h2>
+          <p class="sub">Only in demo mode. Try the whole auction with sample players. Open the captain room in two more tabs.</p>
+          <div class="panel-row">
+            <button class="btn btn-quiet" id="btn-samples">Load 25 sample players</button>
+            <button class="btn btn-danger" id="btn-wipe">Wipe all demo data</button>
+          </div>
+        </section>
+
+        <!-- DANGER -->
+        <section class="panel" id="sec-danger" aria-labelledby="h-danger">
+          <h2 id="h-danger">Reset the auction</h2>
+          <p class="sub">Puts every player back in the pool and restores both purses. Registrations stay.</p>
+          <button class="btn btn-danger" id="btn-reset">Reset auction</button>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+  <footer id="site-footer"></footer>
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>
