@@ -1,20 +1,27 @@
 /* Auction rules shared by the browser, the tests and (copied by hand) the Firestore rules.
    If you change a number here, change it in firestore.rules too. */
 
+/* Every player starts at the same base price. The category only sets the order players are called in
+   (Marquee first), so the organizer can put the best players on the block first. */
+export const BASE_PRICE = 150000;
 export const CATEGORIES = {
-  marquee: { label: "Marquee", base: 500000 },
-  A: { label: "Category A", base: 300000 },
-  B: { label: "Category B", base: 200000 },
-  C: { label: "Category C", base: 100000 },
+  marquee: { label: "Marquee", base: BASE_PRICE },
+  A: { label: "Category A", base: BASE_PRICE },
+  B: { label: "Category B", base: BASE_PRICE },
+  C: { label: "Category C", base: BASE_PRICE },
 };
 
-/* The cheapest base price. Used to make sure a captain can still afford a full squad. */
-export const MIN_BASE = 100000;
+/* Used to make sure a team can still afford a full squad: one base price per empty slot. */
+export const MIN_BASE = BASE_PRICE;
 
-/* A new bid adds STEP_LOW while the price is at or below STEP_THRESHOLD, STEP_HIGH above it. */
-export const STEP_LOW = 25000;
-export const STEP_HIGH = 50000;
-export const STEP_THRESHOLD = 1000000;
+/* How much a new bid adds, by the current price. The first tier whose "below" is above the price wins.
+   Under 4L: 25k. From 4L: 50k. From 6L: 1L. From 10L: 2L. Keep firestore.rules in step with this table. */
+export const STEP_TIERS = [
+  { below: 400000, step: 25000 },
+  { below: 600000, step: 50000 },
+  { below: 1000000, step: 100000 },
+  { below: Infinity, step: 200000 },
+];
 
 export const TEAM_KEYS = ["team1", "team2"];
 

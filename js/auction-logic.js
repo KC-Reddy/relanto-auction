@@ -1,13 +1,13 @@
 /* Bid rules. Pure functions, used by the engine in the browser and by the tests.
    firestore.rules enforces the same rules on the server. */
 
-import { MIN_BASE, STEP_LOW, STEP_HIGH, STEP_THRESHOLD } from "./constants.js";
+import { MIN_BASE, STEP_TIERS } from "./constants.js";
 
 export function stepFor(currentBid) {
-  return currentBid <= STEP_THRESHOLD ? STEP_LOW : STEP_HIGH;
+  return STEP_TIERS.find((t) => currentBid < t.below).step;
 }
 
-/* The only amount a captain may bid right now.
+/* The only amount that can be bid right now.
    The first bid equals the base price, every later bid adds one step. */
 export function nextBid(live) {
   return live.bidCount === 0 ? live.baseBid : live.currentBid + stepFor(live.currentBid);

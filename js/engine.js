@@ -300,7 +300,7 @@ export function createEngine(store, { adminEmails = [] } = {}) {
     const players = await store.list("players");
     return store.run(async (tx) => {
       const cfg = mergeConfig(await tx.get("config/auction"));
-      for (const p of players) tx.update(`players/${p.id}`, { status: "available", team: "", soldPrice: 0, soldAt: 0 });
+      for (const p of players) tx.update(`players/${p.id}`, { status: "available", team: "", soldPrice: 0, soldAt: 0, basePrice: (CATEGORIES[p.category] || CATEGORIES.C).base });
       for (const k of TEAM_KEYS) tx.update(`teams/${k}`, { name: cfg.teamNames[k], purseLeft: cfg.purse, squad: [] });
       tx.set("auction/live", idleLive(tx.serverTime()));
     });

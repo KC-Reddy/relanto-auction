@@ -43,7 +43,7 @@ test("approving creates a public player without email or phone", async () => {
   const out = await engine.approve(r.empId, "A");
   eq(out.email, r.email);
   const p = await store.get("players/" + r.empId);
-  eq(p.basePrice, 300000);
+  eq(p.basePrice, 150000);
   eq(p.status, "available");
   truthy(!("email" in p) && !("phone" in p), "public player must not carry contact details");
   await rejects(() => engine.approve(r.empId, "A"), "invalid");

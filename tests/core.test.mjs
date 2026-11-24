@@ -81,26 +81,36 @@ test("validateRegistration collects every error and cleans good input", () => {
 
 /* ---------- bid logic ---------- */
 const cfg = { ...DEFAULT_CONFIG };
-const liveBase = { status: "live", playerId: "1001", baseBid: 200000, currentBid: 0, currentTeam: "", bidCount: 0, lastBidAt: 1_000_000 };
+const liveBase = { status: "live", playerId: "1001", baseBid: 150000, currentBid: 0, currentTeam: "", bidCount: 0, lastBidAt: 1_000_000 };
 const team = (purseLeft, n) => ({ purseLeft, squad: Array.from({ length: n }, (_, i) => String(i)) });
 
-test("step is 25k up to 10L and 50k above", () => {
-  eq(L.stepFor(200000), 25000);
-  eq(L.stepFor(1000000), 25000);
-  eq(L.stepFor(1000001), 50000);
-  eq(L.stepFor(1025000), 50000);
+test("step grows with the price: 25k, 50k from 4L, 1L from 6L, 2L from 10L", () => {
+  eq(L.stepFor(150000), 25000);
+  eq(L.stepFor(375000), 25000);
+  eq(L.stepFor(399999), 25000);
+  eq(L.stepFor(400000), 50000);
+  eq(L.stepFor(550000), 50000);
+  eq(L.stepFor(600000), 100000);
+  eq(L.stepFor(900000), 100000);
+  eq(L.stepFor(1000000), 200000);
+  eq(L.stepFor(1400000), 200000);
+});
+
+test("a full ladder from the base price", () => {
+  let live = { ...liveBase }; const seen = [];
+  for (let i = 0; i < 16; i += 1) { const a = L.nextBid(live); seen.push(a); live = { ...live, bidCount: live.bidCount + 1, currentBid: a }; }
+  eq(seen, [150000,175000,200000,225000,250000,275000,300000,325000,350000,375000,400000,450000,500000,550000,600000,700000]);
 });
 
 test("first bid equals base, then adds a step", () => {
-  eq(L.nextBid(liveBase), 200000);
-  eq(L.nextBid({ ...liveBase, bidCount: 1, currentBid: 200000 }), 225000);
-  eq(L.nextBid({ ...liveBase, bidCount: 9, currentBid: 1000000 }), 1025000);
-  eq(L.nextBid({ ...liveBase, bidCount: 9, currentBid: 1050000 }), 1100000);
+  eq(L.nextBid(liveBase), 150000);
+  eq(L.nextBid({ ...liveBase, bidCount: 1, currentBid: 150000 }), 175000);
+  eq(L.nextBid({ ...liveBase, bidCount: 9, currentBid: 1000000 }), 1200000);
 });
 
 test("a valid bid is accepted", () => {
   const r = L.checkBid({ team: "team1", live: liveBase, teamState: team(3000000, 0), cfg, nowMs: 1_005_000 });
-  eq(r, { ok: true, amount: 200000 });
+  eq(r, { ok: true, amount: 150000 });
 });
 
 test("bids are refused when they should be", () => {
@@ -109,19 +119,19 @@ test("bids are refused when they should be", () => {
   truthy(!L.checkBid({ ...ok, live: { ...liveBase, status: "paused" } }).ok, "paused");
   truthy(!L.checkBid({ ...ok, nowMs: 1_000_000 + 30_001 }).ok, "late");
   truthy(L.checkBid({ ...ok, nowMs: 1_000_000 + 30_000 }).ok, "exactly on the clock still counts");
-  truthy(!L.checkBid({ ...ok, live: { ...liveBase, currentTeam: "team1", bidCount: 1, currentBid: 200000 } }).ok, "self outbid");
+  truthy(!L.checkBid({ ...ok, live: { ...liveBase, currentTeam: "team1", bidCount: 1, currentBid: 150000 } }).ok, "self outbid");
   truthy(!L.checkBid({ ...ok, teamState: team(3000000, 13) }).ok, "squad full");
-  truthy(!L.checkBid({ ...ok, teamState: team(150000, 0) }).ok, "cannot afford");
+  truthy(!L.checkBid({ ...ok, teamState: team(100000, 0) }).ok, "cannot afford");
 });
 
 test("reserve rule keeps enough to fill the minimum squad", () => {
   // 10 players already (min 11): reserve for 0 more slots, so can spend everything
-  eq(L.checkBid({ team: "team1", live: liveBase, teamState: team(200000, 10), cfg, nowMs: 1_001_000 }).ok, true);
-  // 9 players: after this bid 10, need 1 more at 1L. Purse 250000 - 200000 = 50000 < 100000
+  eq(L.checkBid({ team: "team1", live: liveBase, teamState: team(150000, 10), cfg, nowMs: 1_001_000 }).ok, true);
+  // 9 players: after this bid 10, need 1 more at 1.5L. Purse 250000 - 150000 = 100000 < 150000
   eq(L.checkBid({ team: "team1", live: liveBase, teamState: team(250000, 9), cfg, nowMs: 1_001_000 }).ok, false);
-  // purse 300000 leaves 100000, exactly enough
+  // purse 300000 leaves 150000, exactly enough
   eq(L.checkBid({ team: "team1", live: liveBase, teamState: team(300000, 9), cfg, nowMs: 1_001_000 }).ok, true);
-  eq(L.reserveNeeded(1, 11), 1000000);
+  eq(L.reserveNeeded(1, 11), 1500000);
   eq(L.reserveNeeded(11, 11), 0);
   eq(L.reserveNeeded(13, 11), 0);
 });

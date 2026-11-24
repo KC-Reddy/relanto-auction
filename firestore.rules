@@ -54,7 +54,7 @@ service cloud.firestore {
         let c = cfg();
         let team = after.currentTeam;
         let teamDoc = get(/databases/$(database)/documents/teams/$(team)).data;
-        let step = before.currentBid <= 1000000 ? 25000 : 50000;
+        let step = before.currentBid < 400000 ? 25000 : (before.currentBid < 600000 ? 50000 : (before.currentBid < 1000000 ? 100000 : 200000));
         let amount = before.bidCount == 0 ? before.baseBid : before.currentBid + step;
         return signedIn()
           && (team == 'team1' || team == 'team2')
@@ -68,7 +68,7 @@ service cloud.firestore {
           && request.time <= before.lastBidAt + duration.value(c.lotSeconds, 's')
           && teamDoc.squad.size() < c.maxSquad
           && teamDoc.purseLeft >= amount
-          && teamDoc.purseLeft - amount >= (c.minSquad > teamDoc.squad.size() + 1 ? (c.minSquad - teamDoc.squad.size() - 1) * 100000 : 0);
+          && teamDoc.purseLeft - amount >= (c.minSquad > teamDoc.squad.size() + 1 ? (c.minSquad - teamDoc.squad.size() - 1) * 150000 : 0);
       }
     }
 
