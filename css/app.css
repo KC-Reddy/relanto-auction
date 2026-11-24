@@ -157,3 +157,14 @@ body.screen { background-attachment: fixed; }
 .result-stats dt { font-size: var(--step--1); opacity: 0.85; }
 .result-stats dd { font-family: var(--font-display); font-weight: 800; font-size: var(--step-2); line-height: 1.1; }
 .result-body { padding: var(--space-2) var(--space-3) var(--space-3); background: rgba(10, 22, 19, 0.85); border: 1px solid var(--line-strong); border-top: 0; border-radius: 0 0 6px 6px; }
+
+/* Desk bidding: the organizer enters bids called out loud */
+.desk { margin-top: var(--space-3); display: grid; gap: var(--space-2); }
+.desk-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+.desk .bid-btn { max-width: none; display: grid; gap: 0.2rem; justify-items: center; cursor: pointer; border: 0; border-radius: 10px; color: var(--ink); padding: 1.1rem 1rem; }
+.desk .bid-btn[data-team="team1"] { background: var(--ball); color: var(--chalk); }
+.desk .bid-btn[data-team="team2"] { background: var(--bulb); }
+.desk .bid-btn[disabled] { background: #2a3a35; color: var(--chalk-dim); cursor: not-allowed; }
+.desk .bid-who { font-size: 1rem; font-weight: 700; letter-spacing: 0.02em; }
+.desk .bid-amt { font-size: clamp(1.6rem, 1.2rem + 2vw, 2.6rem); line-height: 1; }
+@media (max-width: 600px) { .desk-row { grid-template-columns: 1fr; } }

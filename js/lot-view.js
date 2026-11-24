@@ -91,11 +91,16 @@ export function createLotView(root, { big = false } = {}) {
     const { cfg, live } = last;
     if (!live || !cfg || (live.status !== "live" && live.status !== "paused")) return;
     if (live.status === "paused") {
+      bar.hidden = !cfg.timerOn;
+      clock.hidden = false;
       clock.textContent = "Paused";
       barFill.style.width = "100%";
       bar.dataset.low = "false";
       return;
     }
+    bar.hidden = !cfg.timerOn;
+    clock.hidden = !cfg.timerOn;
+    if (!cfg.timerOn) return;
     const nowMs = tick.now ? tick.now() : Date.now();
     const left = timeLeftMs(live, nowMs, cfg.lotSeconds);
     clock.textContent = left > 0 ? mmss(left) : "Time";

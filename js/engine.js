@@ -81,6 +81,7 @@ export function createEngine(store, { adminEmails = [] } = {}) {
         if (next.captains[k] && checkEmail(next.captains[k])) fail("invalid", "A captain email is not valid.");
       }
       if (next.captains.team1 && next.captains.team1 === next.captains.team2) fail("invalid", "The two captains need different emails.");
+      if (typeof next.timerOn !== "boolean") fail("invalid", "The clock must be on or off.");
       if (typeof next.registrationOpen !== "boolean") fail("invalid", "Registration must be open or closed.");
       if (next.auctionDate && Number.isNaN(new Date(next.auctionDate).getTime())) fail("invalid", "The auction date is not valid.");
 
@@ -165,7 +166,7 @@ export function createEngine(store, { adminEmails = [] } = {}) {
       if (player.status !== "available" && player.status !== "unsold") fail("invalid", "This player is not available.");
       tx.set("auction/live", {
         status: "live", playerId, baseBid: player.basePrice, currentBid: 0, currentTeam: "",
-        bidCount: 0, lastBidAt: tx.serverTime(), pausedLeftMs: 0,
+        bidCount: 0, lastBidAt: tx.serverTime(), pausedLeftMs: 0, history: [],
       });
       tx.update(`players/${playerId}`, { status: "live" });
       return { playerId };
@@ -203,6 +204,44 @@ export function createEngine(store, { adminEmails = [] } = {}) {
         currentBid: verdict.amount, currentTeam: team, bidCount: live.bidCount + 1, lastBidAt: tx.serverTime(),
       });
       return { amount: verdict.amount };
+    });
+  }
+
+  /* Desk bidding: the organizer types in a bid the captain called out loud.
+     No captain sign-in and no clock, but every purse and squad rule still applies. */
+  async function deskBid(team, expectedAmount) {
+    requireAdmin();
+    if (!TEAM_KEYS.includes(team)) fail("invalid", "Unknown team.");
+    const cfg = await getConfig();
+    return store.run(async (tx) => {
+      const [live, teamDoc] = await Promise.all([tx.get("auction/live"), tx.get(`teams/${team}`)]);
+      if (!live || !teamDoc) fail("not-found", "The auction is not set up yet.");
+      const verdict = checkBid({ team, live, teamState: teamDoc, cfg, nowMs: now(), operator: true });
+      if (!verdict.ok) fail("refused", verdict.reason);
+      if (expectedAmount !== undefined && verdict.amount !== expectedAmount) fail("stale", "The price changed. Check the board and try again.");
+      tx.update("auction/live", {
+        currentBid: verdict.amount, currentTeam: team, bidCount: live.bidCount + 1, lastBidAt: tx.serverTime(),
+        history: [...(live.history || []), { team, amount: verdict.amount }],
+      });
+      return { amount: verdict.amount };
+    });
+  }
+
+  /* Take back the last bid (a mis-click or a bid the captain withdrew). */
+  async function undoBid() {
+    requireAdmin();
+    return store.run(async (tx) => {
+      const live = await tx.get("auction/live");
+      const history = (live && live.history) || [];
+      if (!live || live.status === "idle" || !history.length) fail("invalid", "There is no bid to undo.");
+      const rest = history.slice(0, -1);
+      const prev = rest[rest.length - 1];
+      tx.update("auction/live", {
+        history: rest, bidCount: rest.length,
+        currentBid: prev ? prev.amount : 0, currentTeam: prev ? prev.team : "",
+        lastBidAt: tx.serverTime(),
+      });
+      return { removed: history[history.length - 1] };
     });
   }
 
@@ -270,7 +309,7 @@ export function createEngine(store, { adminEmails = [] } = {}) {
   return {
     store, now, getConfig, ensureSetup, saveConfig,
     submitRegistration, approve, reject, setCategory,
-    startLot, pickNext, placeBid, hammer, pause, resume, resetAuction,
+    startLot, pickNext, placeBid, deskBid, undoBid, hammer, pause, resume, resetAuction,
   };
 }
 

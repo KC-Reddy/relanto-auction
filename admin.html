@@ -58,6 +58,15 @@
           <h2 id="h-live">Live control</h2>
           <p class="sub" id="live-sub"></p>
           <div id="lot"></div>
+          <div class="desk" id="desk" hidden>
+            <p class="sub" id="desk-hint">Type in the bid a captain calls out. Keys: 1 for Team 1, 2 for Team 2, Z to undo.</p>
+            <div class="desk-row">
+              <button class="bid-btn" id="btn-bid-team1"></button>
+              <button class="bid-btn" id="btn-bid-team2"></button>
+            </div>
+            <button class="btn btn-quiet btn-small" id="btn-undo">Undo last bid</button>
+            <p class="sub" id="desk-log"></p>
+          </div>
           <div class="panel-row" style="margin-top: var(--space-3)" id="controls">
             <button class="btn btn-primary" id="btn-next">Next player</button>
             <select class="select" id="pick-player" style="width:auto" aria-label="Pick a specific player"></select>
@@ -65,7 +74,7 @@
             <button class="btn btn-primary" id="btn-hammer" hidden>Hammer</button>
             <button class="btn btn-quiet" id="btn-pause" hidden>Pause</button>
             <button class="btn btn-quiet" id="btn-second" hidden>Start second round</button>
-            <label class="switch"><input type="checkbox" id="auto-hammer" checked> Hammer automatically when the clock ends</label>
+            <label class="switch" id="auto-hammer-wrap"><input type="checkbox" id="auto-hammer" checked> Hammer automatically when the clock ends</label>
           </div>
           <div class="teams-strip" id="teams" style="margin-top: var(--space-3)"></div>
           <p class="hint" style="margin-top: var(--space-2)">Keep this tab open during the auction. It runs the automatic hammer and sends the sold emails.</p>
@@ -93,13 +102,14 @@
           <form id="setup-form" class="config-grid" novalidate>
             <div class="field"><label for="c-name1">Team 1 name</label><input class="input" id="c-name1" maxlength="24"></div>
             <div class="field"><label for="c-name2">Team 2 name</label><input class="input" id="c-name2" maxlength="24"></div>
-            <div class="field"><label for="c-cap1">Team 1 captain Gmail</label><input class="input" id="c-cap1" type="email" autocomplete="off" placeholder="captain@gmail.com"></div>
-            <div class="field"><label for="c-cap2">Team 2 captain Gmail</label><input class="input" id="c-cap2" type="email" autocomplete="off" placeholder="captain@gmail.com"></div>
+            <div class="field"><label for="c-cap1">Team 1 captain Gmail (only for the captain room)</label><input class="input" id="c-cap1" type="email" autocomplete="off" placeholder="captain@gmail.com"></div>
+            <div class="field"><label for="c-cap2">Team 2 captain Gmail (only for the captain room)</label><input class="input" id="c-cap2" type="email" autocomplete="off" placeholder="captain@gmail.com"></div>
             <div class="field"><label for="c-purse">Purse per team (lakh)</label><input class="input" id="c-purse" type="number" min="1" max="1000" step="0.5"></div>
             <div class="field"><label for="c-min">Minimum squad</label><input class="input" id="c-min" type="number" min="1" max="25"></div>
             <div class="field"><label for="c-max">Maximum squad</label><input class="input" id="c-max" type="number" min="1" max="25"></div>
             <div class="field"><label for="c-lot">Clock per player (seconds)</label><input class="input" id="c-lot" type="number" min="10" max="180"></div>
             <div class="field wide"><label for="c-date">Auction date and time (India time)</label><input class="input" id="c-date" type="datetime-local" style="max-width: 20rem"></div>
+            <label class="switch wide"><input type="checkbox" id="c-timer"> Use a countdown clock (leave off when bids are called out loud)</label>
             <label class="switch wide"><input type="checkbox" id="c-open"> Registration is open</label>
             <div class="wide panel-row">
               <button class="btn btn-primary" type="submit">Save setup</button>

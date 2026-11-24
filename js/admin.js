@@ -3,6 +3,7 @@ import { connect, roleOf } from "./db.js";
 import { watchAll } from "./live-state.js";
 import { createLotView, renderTeams } from "./lot-view.js";
 import { inr } from "./format.js";
+import { checkBid, nextBid } from "./auction-logic.js";
 import { CATEGORIES } from "./constants.js";
 import { timeLeftMs } from "./auction-logic.js";
 import { sendMail, mailIsLive, getAdminKey, setAdminKey, readOutbox, clearOutbox } from "./mail.js";
@@ -141,6 +142,27 @@ function renderAll(lotView) {
   if (!formFilled) fillSetup();
 }
 
+function renderDesk(live, busy) {
+  const desk = $("desk");
+  desk.hidden = !busy;
+  if (!busy) return;
+  const live_ = live.status === "live";
+  for (const team of ["team1", "team2"]) {
+    const btn = $(`btn-bid-${team}`);
+    const verdict = checkBid({ team, live, teamState: state.teams[team] || { squad: [], purseLeft: 0 }, cfg: state.cfg, nowMs: 0, operator: true });
+    const name = state.cfg.teamNames[team];
+    btn.textContent = "";
+    btn.append(h("span", { class: "bid-who", text: name }), h("span", { class: "bid-amt", text: verdict.ok ? inr(verdict.amount) : "No bid" }));
+    btn.disabled = !live_ || !verdict.ok;
+    btn.dataset.team = team;
+    btn.title = verdict.ok ? "" : verdict.reason;
+    btn.setAttribute("aria-label", verdict.ok ? `${name} bids ${inr(verdict.amount)}` : `${name} cannot bid: ${verdict.reason}`);
+  }
+  $("btn-undo").disabled = !(live.history && live.history.length);
+  const log = (live.history || []).slice(-4).reverse().map((b) => `${state.cfg.teamNames[b.team]} ${inr(b.amount)}`);
+  $("desk-log").textContent = log.length ? `Latest bids: ${log.join(", ")}` : "No bids yet. The first bid is the base price.";
+}
+
 function renderControls() {
   const live = state.live;
   const busy = live && (live.status === "live" || live.status === "paused");
@@ -155,6 +177,8 @@ function renderControls() {
   $("btn-pause").hidden = !busy;
   $("btn-pause").textContent = live && live.status === "paused" ? "Resume (restarts the clock)" : "Pause";
   $("btn-hammer").textContent = live && live.bidCount > 0 ? `Sold to ${state.cfg.teamNames[live.currentTeam]}` : "Mark unsold";
+  renderDesk(live, busy);
+  $("auto-hammer-wrap").hidden = !state.cfg.timerOn;
   $("btn-second").hidden = busy || secondRound || available.length > 0 || unsold.length === 0;
   $("btn-next").disabled = pool.length === 0;
   $("btn-pick").disabled = pool.length === 0;
@@ -280,9 +304,43 @@ function wireControls() {
     if (!id) { toast("Pick a player first.", true); return; }
     await engine.startLot(id);
   }));
-  $("btn-hammer").addEventListener("click", () => doHammer(false));
+  $("btn-hammer").addEventListener("click", () => {
+    const live = state.live;
+    if (live && live.bidCount > 0) {
+      const ok = window.confirm(`Sold to ${state.cfg.teamNames[live.currentTeam]} for ${inr(live.currentBid)}?`);
+      if (!ok) return;
+    }
+    doHammer(false);
+  });
+  for (const team of ["team1", "team2"]) {
+    $(`btn-bid-${team}`).addEventListener("click", () => deskBid(team));
+  }
+  $("btn-undo").addEventListener("click", () => guarded(async () => {
+    const r = await engine.undoBid();
+    toast(`Removed ${inr(r.removed.amount)} from ${state.cfg.teamNames[r.removed.team]}.`);
+  }));
+  document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const tag = (e.target && e.target.tagName) || "";
+    if (["INPUT", "TEXTAREA", "SELECT", "BUTTON"].includes(tag) || (e.target && e.target.isContentEditable)) return;
+    if ($("desk").hidden) return;
+    if (e.key === "1") deskBid("team1");
+    else if (e.key === "2") deskBid("team2");
+    else if (e.key === "z" || e.key === "Z") $("btn-undo").click();
+  });
   $("btn-pause").addEventListener("click", () => guarded(() => (state.live.status === "paused" ? engine.resume() : engine.pause())));
   $("btn-second").addEventListener("click", () => { secondRound = true; renderControls(); toast("Second round: unsold players will be called."); });
+}
+
+let bidding = false;
+async function deskBid(team) {
+  if (bidding || !state || !state.live || state.live.status !== "live") return;
+  bidding = true;
+  try {
+    await guarded(() => engine.deskBid(team, nextBid(state.live)));
+  } finally {
+    bidding = false;
+  }
 }
 
 async function doHammer(auto) {
@@ -309,7 +367,7 @@ async function doHammer(auto) {
 }
 
 function autoHammer() {
-  if (!state || !state.live || state.live.status !== "live" || !$("auto-hammer").checked || hammering) return;
+  if (!state || !state.live || state.live.status !== "live" || !state.cfg.timerOn || !$("auto-hammer").checked || hammering) return;
   if (timeLeftMs(state.live, engine.now(), state.cfg.lotSeconds) <= 0) doHammer(true);
 }
 
@@ -324,6 +382,7 @@ function fillSetup() {
   $("c-min").value = c.minSquad;
   $("c-max").value = c.maxSquad;
   $("c-lot").value = c.lotSeconds;
+  $("c-timer").checked = c.timerOn;
   $("c-date").value = istInputValue(c.auctionDate);
   $("c-open").checked = c.registrationOpen;
   formFilled = true;
@@ -341,6 +400,7 @@ function wireSetup() {
       minSquad: Number($("c-min").value),
       maxSquad: Number($("c-max").value),
       lotSeconds: Number($("c-lot").value),
+      timerOn: $("c-timer").checked,
       registrationOpen: $("c-open").checked,
       auctionDate: date ? new Date(date + ":00+05:30").toISOString() : "",
     };

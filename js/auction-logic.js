@@ -31,18 +31,18 @@ export function reserveNeeded(squadCountAfterBid, minSquad) {
 /* Decide whether a captain may bid right now.
    Returns { ok: true, amount } or { ok: false, reason }.
    team: "team1" | "team2"; teamState: { purseLeft, squad: [...] } */
-export function checkBid({ team, live, teamState, cfg, nowMs }) {
+export function checkBid({ team, live, teamState, cfg, nowMs, operator = false }) {
   if (!live || live.status === "idle" || !live.playerId) return { ok: false, reason: "No player is on the block." };
   if (live.status === "paused") return { ok: false, reason: "The auction is paused." };
   if (live.status !== "live") return { ok: false, reason: "No player is on the block." };
-  if (nowMs > lotEndsAt(live, cfg.lotSeconds)) return { ok: false, reason: "Time is up for this player." };
-  if (live.currentTeam === team) return { ok: false, reason: "You already hold the highest bid." };
+  if (!operator && nowMs > lotEndsAt(live, cfg.lotSeconds)) return { ok: false, reason: "Time is up for this player." };
+  if (live.currentTeam === team) return { ok: false, reason: operator ? "This team already holds the highest bid." : "You already hold the highest bid." };
 
   const count = teamState.squad.length;
   if (count >= cfg.maxSquad) return { ok: false, reason: `Your squad is full (${cfg.maxSquad} players).` };
 
   const amount = nextBid(live);
-  if (amount > teamState.purseLeft) return { ok: false, reason: "Not enough purse left for this bid." };
+  if (amount > teamState.purseLeft) return { ok: false, reason: operator ? "Not enough purse left for this bid." : "Not enough purse left for this bid." };
 
   const reserve = reserveNeeded(count + 1, cfg.minSquad);
   if (teamState.purseLeft - amount < reserve) {

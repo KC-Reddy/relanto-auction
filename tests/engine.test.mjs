@@ -267,3 +267,71 @@ test("simulation really exercises bidding and the purse limits", async () => {
   eq(t1.squad.length <= 13, true);
   eq(refusedForSquad, true);
 });
+
+/* ---------- desk bidding (organizer types in bids called out loud) ---------- */
+async function deskSetup() {
+  const ctx = await fresh();
+  await ctx.as("admin");
+  await loadSamples(ctx.engine, 5);
+  const n = await ctx.engine.pickNext();
+  await ctx.engine.startLot(n.id);
+  return ctx;
+}
+
+test("desk bids run without captains and without a clock", async () => {
+  const { engine, store } = await deskSetup();
+  const a = await engine.deskBid("team1");
+  const b = await engine.deskBid("team2");
+  eq(b.amount > a.amount, true);
+  const live = await store.get("auction/live");
+  eq(live.bidCount, 2);
+  eq(live.currentTeam, "team2");
+  eq(live.history.length, 2);
+});
+
+test("desk bids still follow the rules", async () => {
+  const { engine, as } = await deskSetup();
+  await engine.deskBid("team1");
+  await rejects(() => engine.deskBid("team1"), "refused");           // already leading
+  await rejects(() => engine.deskBid("team1", 123), "refused");
+  await rejects(() => engine.deskBid("team9"), "invalid");
+  await as("team2");
+  await rejects(() => engine.deskBid("team2"), "not-admin");          // captains cannot use the desk
+  await as(null);
+  await rejects(() => engine.deskBid("team2"), "not-admin");
+});
+
+test("a stale expected amount is refused", async () => {
+  const { engine } = await deskSetup();
+  const first = await engine.deskBid("team1");
+  await rejects(() => engine.deskBid("team2", first.amount), "stale");
+});
+
+test("undo removes the last bid and restores the previous leader", async () => {
+  const { engine, store } = await deskSetup();
+  const a = await engine.deskBid("team1");
+  await engine.deskBid("team2");
+  await engine.undoBid();
+  let live = await store.get("auction/live");
+  eq(live.currentTeam, "team1");
+  eq(live.currentBid, a.amount);
+  eq(live.bidCount, 1);
+  await engine.undoBid();
+  live = await store.get("auction/live");
+  eq(live.currentTeam, "");
+  eq(live.currentBid, 0);
+  eq(live.bidCount, 0);
+  await rejects(() => engine.undoBid(), "invalid");
+});
+
+test("undo then hammer sells at the restored price", async () => {
+  const { engine, store } = await deskSetup();
+  const a = await engine.deskBid("team1");
+  await engine.deskBid("team2");
+  await engine.undoBid();
+  const r = await engine.hammer();
+  eq(r.outcome, "sold");
+  eq(r.team, "team1");
+  eq(r.price, a.amount);
+  eq((await store.get("teams/team1")).purseLeft, DEFAULT_CONFIG.purse - a.amount);
+});

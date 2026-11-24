@@ -24,6 +24,7 @@ export const DEFAULT_CONFIG = {
   maxSquad: 13,
   lotSeconds: 30,
   registrationOpen: true,
+  timerOn: false,
   teamNames: { team1: "Team 1", team2: "Team 2" },
   captains: { team1: "", team2: "" },
   auctionDate: "",
