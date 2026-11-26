@@ -15,7 +15,7 @@ export async function enhance({ lenis = false } = {}) {
     if (lenis) smoothScroll(libs);
     if ($("#form")) registerForm(gsap);
     if ($("#teams")) resultsPage();
-    magnetic(".form-actions .btn-primary", 0.2);
+    
   } catch (err) {
     console.warn("Page motion failed:", err);
     document.documentElement.classList.remove("motion");

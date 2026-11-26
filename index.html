@@ -14,6 +14,13 @@
     /* Hide-until-animated styles apply only when motion is wanted; if scripts fail, show everything. */
     if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
       document.documentElement.classList.add("motion");
+      try {
+        if (!sessionStorage.getItem("relanto-pre")) {
+          document.documentElement.classList.add("preload");
+          window.__preloader = new Promise(function (r) { window.__preloaderResolve = r; });
+          setTimeout(function () { window.__preloaderResolve(); document.documentElement.classList.remove("preload"); }, 5000);
+        }
+      } catch (e) { /* storage blocked: skip the intro */ }
       setTimeout(function () { if (!window.__motionReady) document.documentElement.classList.remove("motion"); }, 4500);
     }
   </script>
@@ -23,8 +30,18 @@
   <link rel="stylesheet" href="css/home.css">
   <link rel="stylesheet" href="css/lenis.css">
   <link rel="stylesheet" href="css/motion.css">
+  <link rel="stylesheet" href="css/premium.css">
 </head>
 <body>
+  <div class="preloader" aria-hidden="true">
+    <div class="pre-inner">
+      <svg class="pre-ball" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="#c1272d"/><path d="M5 9c7 4 7 10 0 14M27 9c-7 4-7 10 0 14" fill="none" stroke="#e8ece4" stroke-width="1.6" stroke-dasharray="2 2.4" stroke-linecap="round"/></svg>
+      <p class="pre-word">Relanto Auction</p>
+      <p class="pre-sub">Floodlights warming up</p>
+      <span class="pre-count">00</span>
+      <div class="pre-line"><i></i></div>
+    </div>
+  </div>
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header">
@@ -40,6 +57,7 @@
         <a href="#how">How it works</a>
         <a href="#teams">Teams</a>
         <a href="#rules">Rules</a>
+        <a href="#company">Relanto</a>
         <a href="screen.html">Live board</a>
         <a href="results.html">Results</a>
         <a class="btn btn-primary btn-small" href="register.html">Register</a>
@@ -100,7 +118,7 @@
     <section class="section over" id="how">
       <div class="over-pin">
         <div class="wrap section-head">
-          <h2>Four steps to a team</h2>
+          <h2 data-scramble>Four steps to a team</h2>
         </div>
         <div class="over-viewport">
           <ol class="steps">
@@ -157,7 +175,7 @@
     <section class="section" id="rules">
       <div class="wrap">
         <div class="section-head">
-          <h2>How bidding works</h2>
+          <h2 data-scramble>How bidding works</h2>
           <p>All amounts are fictional. Nobody pays anything.</p>
         </div>
         <div class="rules-grid">
@@ -202,6 +220,40 @@
       </div>
     </section>
 
+    <section class="section company" id="company" aria-labelledby="h-company">
+      <div class="wrap">
+        <div class="company-head">
+          <p class="company-kicker">Hosted by</p>
+          <h2 id="h-company" data-scramble>Relanto</h2>
+          <p class="company-statement">An internal cricket evening, organised by Relanto people for Relanto people. Relanto is a consulting and technology company that helps enterprises get more from planning, data, automation and Salesforce, with AI built into the way it works.</p>
+        </div>
+        <ul class="company-grid">
+          <li class="co-card">
+            <h3>Enterprise planning</h3>
+            <p>Strategic, financial and operational planning for large organisations.</p>
+          </li>
+          <li class="co-card">
+            <h3>Data and AI</h3>
+            <p>Solid data foundations and AI models that keep a person in the loop.</p>
+          </li>
+          <li class="co-card">
+            <h3>Digital transformation</h3>
+            <p>Workflow automation that takes repeat work off busy teams.</p>
+          </li>
+          <li class="co-card">
+            <h3>AI-driven Salesforce</h3>
+            <p>CRM and revenue tools with AI working inside them.</p>
+          </li>
+        </ul>
+        <dl class="company-facts">
+          <div><dt>Founded</dt><dd>2021</dd></div>
+          <div><dt>Headquarters</dt><dd>Bengaluru, India</dd></div>
+          <div><dt>Approach</dt><dd>AI-ingrained</dd></div>
+        </dl>
+        <a class="company-link" href="https://www.relanto.ai" target="_blank" rel="noopener noreferrer">Visit relanto.ai</a>
+      </div>
+    </section>
+
     <section class="section register-band" aria-label="Register">
       <div class="wrap">
         <div>
@@ -214,11 +266,13 @@
   </main>
 
   <footer class="site-footer">
-    <div class="wrap">
-      <p>Relanto Auction is an internal cricket event. All amounts shown are fictional.</p>
+    <div class="wrap footer-row">
+      <p class="footer-brand"><strong>Relanto</strong> Auction. An internal cricket event for the people of Relanto. All amounts shown are fictional.</p>
+      <p class="footer-links"><a href="register.html">Register</a> <a href="screen.html">Live board</a> <a href="results.html">Results</a> <a href="auction.html">Captain room</a> <a href="admin.html">Organizer</a> <a href="https://www.relanto.ai" target="_blank" rel="noopener noreferrer">relanto.ai</a></p>
     </div>
   </footer>
 
   <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/premium.js"></script>
 </body>
 </html>

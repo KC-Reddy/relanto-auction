@@ -11,6 +11,7 @@ const libs = await loadMotion();
 if (libs) {
   try {
     await document.fonts.ready;
+    if (window.__preloader) await window.__preloader;
     start(libs);
   } catch (err) {
     console.warn("Landing motion failed, showing the static page:", err);
