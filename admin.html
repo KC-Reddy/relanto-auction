@@ -14,6 +14,12 @@
     /* Hide-until-animated styles apply only when motion is wanted; if scripts fail, show everything. */
     if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
       document.documentElement.classList.add("motion");
+      try {
+        if (sessionStorage.getItem("relanto-nav")) {
+          document.documentElement.classList.add("curtain-in");
+          setTimeout(function () { document.documentElement.classList.remove("curtain-in"); }, 5000);
+        }
+      } catch (e) { /* storage blocked */ }
       setTimeout(function () { if (!window.__motionReady) document.documentElement.classList.remove("motion"); }, 4500);
     }
   </script>
@@ -26,6 +32,7 @@
   <link rel="stylesheet" href="css/premium.css">
 </head>
 <body>
+  <div class="stage-curtain" aria-hidden="true"><i class="sc sc-l"></i><i class="sc sc-r"></i></div>
   <a class="skip-link" href="#main">Skip to content</a>
   <header id="site-header"></header>
 
