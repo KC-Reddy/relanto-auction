@@ -39,32 +39,74 @@ function progress() {
   update();
 }
 
-/* ---------- cursor: a soft ring trails the pointer and swells over things you can press ---------- */
+/* ---------- cursor: a cricket ball chases the pointer, spins with speed and leaves a comet trail ---------- */
 function cursor() {
   if (!fine || !motionOn) return;
-  const ring = document.createElement("div");
-  const dot = document.createElement("div");
-  ring.className = "cursor-ring";
-  dot.className = "cursor-dot";
-  ring.setAttribute("aria-hidden", "true");
-  dot.setAttribute("aria-hidden", "true");
-  document.body.append(ring, dot);
-  let x = -100, y = -100, rx = -100, ry = -100, on = false;
+  const BALL = '<svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="#c1272d"/><circle cx="12" cy="11" r="6" fill="#e5575d" opacity="0.45"/><path d="M5 9c7 4 7 10 0 14M27 9c-7 4-7 10 0 14" fill="none" stroke="#e8ece4" stroke-width="1.6" stroke-dasharray="2 2.4" stroke-linecap="round"/></svg>';
+  const ball = document.createElement("div");
+  ball.className = "cursor-ball";
+  ball.setAttribute("aria-hidden", "true");
+  ball.innerHTML = BALL;
+  const trail = document.createElement("canvas");
+  trail.className = "cursor-trail";
+  trail.setAttribute("aria-hidden", "true");
+  document.body.append(trail, ball);
+  const ctx = trail.getContext("2d");
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  const fit = () => {
+    trail.width = innerWidth * dpr;
+    trail.height = innerHeight * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+  fit();
+  addEventListener("resize", fit);
+
+  let tx = -100, ty = -100, x = -100, y = -100, angle = 0, running = false, lastMove = 0;
+  const pts = [];
+  const show = () => document.documentElement.classList.add("has-cursor");
+  const hide = () => document.documentElement.classList.remove("has-cursor");
+
   addEventListener("pointermove", (e) => {
-    x = e.clientX; y = e.clientY;
-    if (!on) { on = true; document.documentElement.classList.add("has-cursor"); }
-    dot.style.transform = `translate(${x}px, ${y}px)`;
-    ring.classList.toggle("is-hot", !!e.target.closest && !!e.target.closest("a, button, label, select, summary, [role=button], .skill"));
+    if (e.pointerType && e.pointerType !== "mouse") return;
+    if (x < 0 && y < 0) { x = e.clientX; y = e.clientY; }
+    tx = e.clientX; ty = e.clientY;
+    lastMove = performance.now();
+    show(); // also brings the ball back after you return from another tab or window
+    ball.classList.toggle("is-hot", !!e.target.closest && !!e.target.closest("a, button, label, select, summary, [role=button], .skill"));
+    if (!running) { running = true; requestAnimationFrame(loop); }
   }, { passive: true });
-  document.addEventListener("pointerleave", () => document.documentElement.classList.remove("has-cursor"));
-  addEventListener("pointerdown", () => ring.classList.add("is-down"));
-  addEventListener("pointerup", () => ring.classList.remove("is-down"));
-  (function loop() {
-    rx += (x - rx) * 0.18;
-    ry += (y - ry) * 0.18;
-    ring.style.transform = `translate(${rx}px, ${ry}px)`;
+  document.addEventListener("pointerleave", hide);
+  document.addEventListener("mouseleave", hide);
+  document.addEventListener("pointerenter", show);
+  addEventListener("blur", hide);
+  document.addEventListener("visibilitychange", () => { if (document.hidden) { hide(); pts.length = 0; } });
+  addEventListener("pointerdown", () => ball.classList.add("is-down"));
+  addEventListener("pointerup", () => ball.classList.remove("is-down"));
+
+  function loop(now) {
+    const px = x, py = y;
+    x += (tx - x) * 0.3;
+    y += (ty - y) * 0.3;
+    const vx = x - px, vy = y - py;
+    const speed = Math.hypot(vx, vy);
+    angle += (vx >= 0 ? 1 : -1) * speed * 7 + (speed > 0.2 ? 0 : 0.6);
+    ball.style.transform = `translate(${x}px, ${y}px) rotate(${angle}deg)`;
+    if (speed > 0.4) pts.push({ x, y, t: now });
+    while (pts.length && now - pts[0].t > 420) pts.shift();
+
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    ctx.lineCap = "round";
+    for (let i = 1; i < pts.length; i++) {
+      const a = pts[i - 1], b = pts[i];
+      const life = 1 - (now - b.t) / 420;
+      ctx.strokeStyle = `rgba(${Math.round(240 - 47 * (1 - life))}, ${Math.round(176 - 137 * (1 - life))}, ${Math.round(58 - 17 * (1 - life))}, ${Math.max(0, life) * 0.75})`;
+      ctx.lineWidth = Math.max(0.5, 11 * life);
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+    }
+    const still = speed < 0.05 && !pts.length && now - lastMove > 600;
+    if (still) { running = false; ctx.clearRect(0, 0, innerWidth, innerHeight); return; }
     requestAnimationFrame(loop);
-  })();
+  }
 }
 
 /* ---------- spotlight: a pool of light follows the pointer inside cards ---------- */
