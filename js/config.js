@@ -22,7 +22,7 @@ export const FIREBASE_CONFIG = {
 export const ADMIN_EMAILS = ["krishnachaitanyareddykothakapu@gmail.com"];
 
 /* The Apps Script web app URL that sends the emails (see docs/SETUP.md). Empty = demo outbox only. */
-export const MAIL_ENDPOINT = "";
+export const MAIL_ENDPOINT = "https://script.google.com/macros/s/AKfycbwuAJWycfFgXq-COq2-s_1ZPrwCmhvoRsTy76nG0SAG_v8fnZLlABUFZPy0vEdqlMHx/exec";
 
 /* Public address of the site, used for links inside emails. */
 export const SITE_URL = "https://kc-reddy.github.io/relanto-auction";
