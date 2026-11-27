@@ -1,0 +1,44 @@
+/* Team sheet overlay: TV style line-up. */
+.ts { --tc: var(--ball, #c1272d); position: fixed; inset: 0; z-index: 400; color: var(--chalk, #e8ece4); display: flex; flex-direction: column; }
+.ts.team-team2 { --tc: var(--bulb, #ffb703); }
+.ts-bg { position: absolute; inset: 0; background: radial-gradient(120% 80% at 50% -10%, color-mix(in srgb, var(--tc) 38%, #0a1613), #050b09 70%); }
+.ts-bg::before, .ts-bg::after { content: ""; position: absolute; inset: -20%; background: conic-gradient(from 200deg at 50% -10%, transparent 0 10%, rgba(255, 255, 255, 0.07) 12% 14%, transparent 16% 40%, rgba(255, 255, 255, 0.05) 42% 44%, transparent 46%); animation: ts-sway 9s ease-in-out infinite alternate; }
+.ts-bg::after { animation-duration: 13s; animation-direction: alternate-reverse; opacity: 0.8; }
+@keyframes ts-sway { from { transform: rotate(-4deg); } to { transform: rotate(4deg); } }
+.ts-bar { position: relative; z-index: 2; display: flex; justify-content: flex-end; gap: 0.6rem; padding: 0.9rem clamp(1rem, 3vw, 2rem); }
+.ts-scroll { position: relative; z-index: 1; flex: 1; overflow-y: auto; padding: 0 clamp(1rem, 3vw, 2.5rem) 3rem; }
+.ts-head { position: relative; max-width: 78rem; margin: 0 auto 1.6rem; padding: 0.4rem 0 0; }
+.ts-stripe { position: absolute; left: -2rem; top: 1.2rem; width: min(70%, 44rem); height: clamp(3.2rem, 8vw, 6.4rem); background: var(--tc); transform-origin: left; transform: skewX(-14deg); opacity: 0.9; z-index: -1; }
+.ts-kicker { font: 700 var(--step--1, 0.9rem) var(--font-body, sans-serif); letter-spacing: 0.3em; text-transform: uppercase; color: #fff7e0; margin: 0 0 0.2rem 1rem; }
+.ts-title { font-family: var(--font-display, 'Big Shoulders Display', sans-serif); font-weight: 800; font-size: clamp(2.6rem, 8.5vw, 6.4rem); line-height: 0.95; letter-spacing: 0.03em; text-transform: uppercase; margin: 0 0 0 1rem; color: #fff; text-shadow: 0 6px 30px rgba(0, 0, 0, 0.45); }
+.team-team2 .ts-title, .team-team2 .ts-kicker { color: #1a1204; text-shadow: none; }
+.ts-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.1rem 0 0 1rem; }
+.ts-chip { padding: 0.28rem 0.8rem; border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 999px; font-size: var(--step--1, 0.9rem); background: rgba(0, 0, 0, 0.28); }
+.ts-grid { list-style: none; margin: 0 auto; padding: 0; max-width: 78rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 1.1rem; }
+.ts-empty { grid-column: 1 / -1; padding: 2.5rem 1rem; text-align: center; color: var(--chalk-dim, #9fb0a6); font-size: var(--step-1, 1.2rem); }
+.ts-card { --rc: #ffb703; position: relative; display: flex; flex-direction: column; background: linear-gradient(165deg, #12271f, #0a1612); border-top: 3px solid var(--tc); clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 0 100%); padding-bottom: 0.9rem; box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.6); }
+.tone-bat { --rc: #ffb703; } .tone-bowl { --rc: #4aa3ff; } .tone-all { --rc: #3ddc97; } .tone-keep { --rc: #c58bff; }
+.ts-no { position: absolute; z-index: 2; top: 0.35rem; left: 0.7rem; font: 800 2.2rem/1 var(--font-display, sans-serif); color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.8); letter-spacing: 0.03em; }
+.ts-photo { position: relative; aspect-ratio: 4 / 4.3; overflow: hidden; clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); background: #0c1914; }
+.ts-photo img { width: 100%; height: 100%; object-fit: cover; display: block; max-width: none; }
+.ts-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.38) 50%, transparent 65%); transform: translateX(-120%); }
+.ts-photo.shine::after { animation: ts-shine 0.9s ease-out var(--shine-delay, 0ms) both; }
+@keyframes ts-shine { to { transform: translateX(120%); } }
+.ts-role { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 0.45rem; align-self: flex-start; margin: -1.3rem 0 0 0.8rem; padding: 0.3rem 0.9rem 0.3rem 0.7rem; background: var(--rc); color: #0b1a15; font: 800 0.95rem/1 var(--font-display, sans-serif); letter-spacing: 0.1em; text-transform: uppercase; transform: skewX(-14deg); }
+.ts-role > * { transform: skewX(14deg); }
+.ts-ico { display: inline-flex; width: 1.15rem; height: 1.15rem; }
+.ts-ico svg { width: 100%; height: 100%; max-width: none; }
+.ts-name { margin: 0.7rem 0.9rem 0.4rem; font: 800 clamp(1.35rem, 2.4vw, 1.75rem)/1.05 var(--font-display, sans-serif); letter-spacing: 0.03em; text-transform: uppercase; overflow-wrap: anywhere; }
+.ts-facts { list-style: none; margin: 0 0.9rem; padding: 0; display: grid; gap: 0.3rem; }
+.ts-facts li { display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; padding: 0.28rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.09); font-size: 0.9rem; }
+.ts-facts .k { color: var(--chalk-dim, #9fb0a6); text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.72rem; }
+.ts-facts .v { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 600; text-align: right; }
+.ts-facts .dim .v { color: var(--chalk-dim, #9fb0a6); font-weight: 400; }
+.hand { display: inline-grid; place-items: center; width: 1.35rem; height: 1.35rem; border-radius: 50%; background: var(--rc); color: #0b1a15; font: 800 0.78rem/1 var(--font-display, sans-serif); }
+.pips { gap: 0.28rem; }
+.pips i { width: 0.62rem; height: 0.62rem; border-radius: 50%; background: rgba(255, 255, 255, 0.16); display: block; }
+.pips i.on { background: var(--rc); box-shadow: 0 0 8px var(--rc); }
+.ts-bio { margin: 0.6rem 0.9rem 0; font-size: 0.85rem; font-style: italic; color: var(--chalk-dim, #b4c2b9); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.ts-price { margin: 0.55rem 0.9rem 0; font: 800 1.25rem var(--font-display, sans-serif); color: var(--bulb, #ffb703); }
+@media (max-width: 560px) { .ts-grid { grid-template-columns: repeat(2, 1fr); gap: 0.7rem; } .ts-stripe { left: -1rem; } .ts-name { font-size: 1.1rem; } .ts-facts li { font-size: 0.8rem; } }
+@media (prefers-reduced-motion: reduce) { .ts-bg::before, .ts-bg::after { animation: none; } }

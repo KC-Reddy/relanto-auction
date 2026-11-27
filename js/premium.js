@@ -119,26 +119,103 @@ function stage() {
   try { sessionStorage.removeItem("relanto-nav"); } catch { /* private mode */ }
   if (!motionOn) { sc.remove(); return; }
 
+  let opened = false;
+  const timers = [];
+  const later = (fn, ms) => timers.push(setTimeout(fn, ms));
   const open = (quick) => {
+    if (opened) return;
+    opened = true;
+    timers.forEach(clearTimeout);
     sc.classList.add("is-open");
     setTimeout(() => { if (window.__preloaderResolve) window.__preloaderResolve(); }, quick ? 80 : 450);
     setTimeout(() => {
       if (!quick) { try { sessionStorage.setItem("relanto-pre", "1"); } catch { /* ignore */ } }
       if (window.__preloaderResolve) window.__preloaderResolve();
       clearAll();
-    }, quick ? 1200 : 2100);
+    }, quick ? 1200 : 1700);
+  };
+
+  /* the opening: a batter hits a ball, the curtains burst apart on contact */
+  const BALL = '<svg viewBox="0 0 32 32" style="display:block;width:100%;height:100%;max-width:none;max-height:none"><circle cx="16" cy="16" r="14" fill="#c1272d"/><circle cx="11.5" cy="10.5" r="6" fill="#e5575d" opacity="0.5"/><path d="M5 9c7 4 7 10 0 14M27 9c-7 4-7 10 0 14" fill="none" stroke="#f1efe6" stroke-width="1.7" stroke-dasharray="2 2.4" stroke-linecap="round"/></svg>';
+  const piece = (css, html = "") => {
+    const e = document.createElement("div");
+    e.style.cssText = "position:absolute;pointer-events:none;will-change:transform,opacity;" + css;
+    e.innerHTML = html;
+    sc.append(e);
+    return e;
+  };
+  const hit = () => {
+    if (opened) return;
+    sc.classList.add("is-batting");
+    const svg = $(".sc-hit svg", sc), bat = $(".bat", svg);
+    later(() => {
+      if (opened) return;
+      const r = svg.getBoundingClientRect();
+      const cx = r.left + (r.width * 149) / 210, cy = r.top + (r.height * 121) / 200;
+      const px = Math.max(24, Math.round(innerHeight * 0.045));
+      const FALL = 470;
+      // the ball drops in from the top with a short trail
+      for (let i = 0; i < 4; i++) {
+        const g = piece(`left:0;top:0;width:${px}px;height:${px}px;margin:${-px / 2}px 0 0 ${-px / 2}px;filter:drop-shadow(0 4px 4px rgba(0,0,0,.45))`, BALL);
+        g.style.opacity = String(i === 0 ? 1 : 0.38 - i * 0.07);
+        g.animate(
+          [{ transform: `translate(${cx}px, ${-px}px) scale(.35)` }, { transform: `translate(${cx}px, ${cy}px) scale(1)` }],
+          { duration: FALL, delay: i * 34, easing: "cubic-bezier(.45,0,.9,.55)", fill: "both" },
+        ).onfinish = () => g.remove();
+      }
+      // the bat: lift back, then swing through the ball
+      bat.style.transformBox = "view-box";
+      bat.style.transformOrigin = "102px 104px";
+      const lean = $(".bt-lean", svg);
+      lean.style.transformBox = "view-box";
+      lean.style.transformOrigin = "80px 190px";
+      bat.animate([{ transform: "rotate(10deg)" }, { transform: "rotate(142deg)" }], { duration: 230, easing: "ease-out", fill: "forwards" });
+      lean.animate([{ transform: "rotate(0deg)" }, { transform: "rotate(-7deg)" }], { duration: 230, easing: "ease-out", fill: "forwards" });
+      later(() => {
+        bat.animate([{ transform: "rotate(142deg)" }, { transform: "rotate(-72deg)", offset: 0.72 }, { transform: "rotate(-118deg)" }], { duration: 230, easing: "cubic-bezier(.3,0,.2,1)", fill: "forwards" });
+        lean.animate([{ transform: "rotate(-7deg)" }, { transform: "rotate(9deg)" }], { duration: 230, easing: "ease-out", fill: "forwards" });
+      }, FALL - 165);
+      later(() => {
+        // contact: flash, ring, THWACK, shake, ball smashed at the viewer, curtains burst apart
+        sc.style.setProperty("--dur", "1.05s");
+        const fl = piece(`inset:0;background:radial-gradient(circle at ${cx}px ${cy}px, rgba(255,255,255,.95), rgba(255,214,140,.45) 22%, rgba(255,214,140,0) 58%)`);
+        fl.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 320, easing: "ease-out", fill: "both" }).onfinish = () => fl.remove();
+        const ring = piece(`left:${cx}px;top:${cy}px;width:22px;height:22px;margin:-11px;border-radius:50%;border:4px solid #ffd27a`);
+        ring.animate([{ transform: "scale(.4)", opacity: 1 }, { transform: "scale(9)", opacity: 0 }], { duration: 520, easing: "ease-out", fill: "both" }).onfinish = () => ring.remove();
+        const word = piece(`left:${cx}px;top:${cy - 40}px;font:800 clamp(40px,7vw,96px)/1 var(--font-display);letter-spacing:.05em;color:#fff7e0;text-shadow:0 4px 0 #8f1a20,0 10px 26px rgba(0,0,0,.5);white-space:nowrap`, "THWACK!");
+        word.animate(
+          [{ transform: "translate(-50%,-50%) scale(.3) rotate(-10deg)", opacity: 0 }, { transform: "translate(-50%,-70%) scale(1.1) rotate(-6deg)", opacity: 1, offset: 0.25 }, { transform: "translate(-50%,-90%) scale(1) rotate(-6deg)", opacity: 0 }],
+          { duration: 700, easing: "ease-out", fill: "both" },
+        ).onfinish = () => word.remove();
+        sc.animate(
+          [{ transform: "translate(0,0)" }, { transform: "translate(-7px,4px)" }, { transform: "translate(6px,-5px)" }, { transform: "translate(-4px,-3px)" }, { transform: "translate(3px,3px)" }, { transform: "translate(0,0)" }],
+          { duration: 260, easing: "linear" },
+        );
+        const sm = piece(`left:0;top:0;width:${px}px;height:${px}px;margin:${-px / 2}px 0 0 ${-px / 2}px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.5))`, BALL);
+        sm.animate(
+          [
+            { transform: `translate(${cx}px, ${cy}px) scale(1) rotate(0deg)`, opacity: 1 },
+            { transform: `translate(${innerWidth * 0.56}px, ${innerHeight * 0.32}px) scale(20) rotate(900deg)`, opacity: 1, offset: 0.8 },
+            { transform: `translate(${innerWidth * 0.58}px, ${innerHeight * 0.3}px) scale(30) rotate(1000deg)`, opacity: 0 },
+          ],
+          { duration: 620, easing: "cubic-bezier(.5,0,.9,.4)", fill: "both" },
+        ).onfinish = () => sm.remove();
+        open(false);
+      }, FALL);
+    }, 280);
   };
 
   if (root.classList.contains("preload")) {
     const num = $(".pre-count", sc);
     const t0 = performance.now();
-    const total = 1300;
+    const total = 1000;
     (function tick(now) {
+      if (opened) return;
       const p = Math.min(1, (now - t0) / total);
       const e = 1 - Math.pow(1 - p, 3);
       num.textContent = String(Math.round(e * 100)).padStart(2, "0");
       sc.style.setProperty("--pp", e.toFixed(3));
-      if (p < 1) requestAnimationFrame(tick); else setTimeout(() => open(false), 250);
+      if (p < 1) requestAnimationFrame(tick); else later(hit, 120);
     })(t0);
     sc.addEventListener("click", () => open(false), { once: true });
   } else if (root.classList.contains("curtain-in")) {

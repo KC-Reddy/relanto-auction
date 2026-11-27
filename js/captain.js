@@ -4,6 +4,7 @@ import { watchAll } from "./live-state.js";
 import { createLotView, renderTeams } from "./lot-view.js";
 import { checkBid } from "./auction-logic.js";
 import { inr } from "./format.js";
+import { openTeamSheet } from "./team-sheet.js";
 
 renderChrome("");
 const $ = (id) => document.getElementById(id);
@@ -51,6 +52,7 @@ store.auth.onChange(async (user) => {
   const role = roleOf(user, cfg || { captains: {} }, adminEmails);
   myTeam = role.team;
   $("signout").hidden = !role.signedIn;
+  $("see-team").hidden = !role.team;
   $("who").textContent = role.signedIn ? `Signed in as ${role.email}` : "";
   $("signin").hidden = role.signedIn;
   $("denied").hidden = !(role.signedIn && !role.team);
@@ -74,6 +76,18 @@ function start() {
   setInterval(() => { lotView.tick(); renderBid(); }, 250);
 
   $("bid-btn").addEventListener("click", placeBid);
+  const showTeam = (ev) => {
+    if (!state || !myTeam) return;
+    openTeamSheet({
+      players: state.players.filter((p) => p.team === myTeam && p.status === "sold"),
+      teamKey: myTeam,
+      teamName: state.cfg.teamNames[myTeam],
+      teamState: state.teams[myTeam],
+      opener: ev.currentTarget,
+    });
+  };
+  $("see-team").addEventListener("click", showTeam);
+  $("see-team-2").addEventListener("click", showTeam);
 }
 
 /* ---------- bidding ---------- */
