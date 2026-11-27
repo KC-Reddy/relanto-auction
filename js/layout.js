@@ -7,7 +7,7 @@ const LINKS = [
   ["results.html", "Results"],
 ];
 
-const BALL = `<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="#c1272d"/><path d="M5 9c7 4 7 10 0 14M27 9c-7 4-7 10 0 14" fill="none" stroke="#e8ece4" stroke-width="1.6" stroke-dasharray="2 2.4" stroke-linecap="round"/></svg>`;
+const BALL = `<img class="brand-mark" src="assets/rcl-logo.webp" alt="" width="40" height="50">`;
 
 export function renderChrome(active) {
   const header = document.getElementById("site-header");
