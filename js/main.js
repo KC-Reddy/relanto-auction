@@ -1,4 +1,4 @@
-/* Relanto Auction: landing page behaviour.
+/* Relanto Cricket League: landing page behaviour.
    Plain script, no build step, so the site runs on GitHub Pages as is. */
 
 const CONFIG = {

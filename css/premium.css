@@ -172,7 +172,7 @@ body::after {
 .is-open .sc-spot, .is-open .sc-center, .is-closing .sc-spot, .is-closing .sc-center { opacity: 0; }
 .is-open .sc-center { transform: scale(1.06); }
 .sc-center:empty, .stage-curtain:not(:has(.pre-word)) .sc-spot { display: none; }
-.pre-ball { width: 78px; height: 78px; margin-bottom: 1.1rem; transform: rotate(calc(var(--pp, 0) * 900deg)); filter: drop-shadow(0 16px 16px rgba(0, 0, 0, 0.55)); }
+.pre-ball { width: 56px; height: 56px; margin-bottom: 0.8rem; transform: rotate(calc(var(--pp, 0) * 900deg)); filter: drop-shadow(0 16px 16px rgba(0, 0, 0, 0.55)); }
 .pre-presents { color: #f6d58a; font-size: var(--step--1); letter-spacing: 0.4em; text-transform: uppercase; margin-bottom: 0.4rem; }
 .pre-word { font-family: var(--font-display); font-weight: 800; font-size: var(--step-4); line-height: 0.9; letter-spacing: 0.06em; text-transform: uppercase; color: #fff7e0; text-shadow: 0 4px 30px rgba(0, 0, 0, 0.55); }
 .pre-sub { margin-top: 0.7rem; color: #f6d58a; font-size: var(--step--1); letter-spacing: 0.22em; text-transform: uppercase; }
@@ -190,3 +190,21 @@ body::after {
 /* footer sits at the bottom even on short pages */
 body { display: flex; flex-direction: column; min-height: 100vh; min-height: 100svh; }
 body > main { flex: 1 0 auto; }
+
+/* ---------- Relanto logo chips: the logo is dark navy, so it sits on a light plate ---------- */
+.co-logo { display: inline-flex; align-items: center; background: #fbf8ef; border-radius: 10px; box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 6px 18px rgba(0, 0, 0, 0.35); }
+.co-logo img { display: block; max-width: none; max-height: none; height: auto; }
+.co-logo-head { margin-left: var(--space-3); padding: 5px 11px; flex: none; }
+.co-logo-head img { width: 82px; }
+.co-logo-foot { padding: 10px 16px; flex: none; }
+.co-logo-foot img { width: 128px; }
+.co-logo-pre { padding: 12px 22px; margin-bottom: 1.2rem; border-radius: 14px; }
+.co-logo-pre img { width: clamp(150px, 22vw, 210px); }
+.site-header .wrap { gap: var(--space-2); }
+.site-header .brand + .co-logo-head { margin-right: auto; }
+@media (max-width: 1100px) { .co-logo-head { display: none; } }
+.pre-word { font-size: var(--step-3); max-width: 14ch; line-height: 0.95; text-wrap: balance; }
+.site-footer .footer-row { gap: var(--space-4); flex-wrap: wrap; justify-content: space-between; }
+.site-footer .footer-row { display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: var(--space-4) var(--space-5); }
+.site-footer .footer-links { margin-left: auto; }
+@media (max-width: 800px) { .site-footer .footer-row { flex-direction: column; align-items: flex-start; } .site-footer .footer-links { margin-left: 0; } }

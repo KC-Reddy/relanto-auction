@@ -15,7 +15,8 @@ export function renderChrome(active) {
     header.className = "site-header";
     header.innerHTML = `
       <div class="wrap">
-        <a class="brand" href="index.html">${BALL}Relanto Auction</a>
+        <a class="brand" href="index.html">${BALL}Relanto Cricket League</a>
+        <a class="co-logo co-logo-head" href="https://www.relanto.ai" target="_blank" rel="noopener noreferrer" aria-label="Relanto"><img src="assets/relanto-wordmark.svg" alt="Relanto" width="394" height="106"></a>
         <nav class="nav" aria-label="Main">
           ${LINKS.map(([href, label]) => `<a href="${href}"${href === active ? ' aria-current="page"' : ""}>${label}</a>`).join("")}
         </nav>
@@ -26,7 +27,8 @@ export function renderChrome(active) {
     footer.className = "site-footer";
     footer.innerHTML = `
       <div class="wrap footer-row">
-        <p class="footer-brand"><strong>Relanto</strong> Auction. An internal cricket event for the people of Relanto. All amounts shown are fictional.</p>
+        <a class="co-logo co-logo-foot" href="https://www.relanto.ai" target="_blank" rel="noopener noreferrer" aria-label="Relanto"><img src="assets/relanto-logo.svg" alt="Relanto, Reimagining AI" width="394" height="151"></a>
+        <p class="footer-brand"><strong>Relanto</strong> Cricket League. An internal cricket event for the people of Relanto. All amounts shown are fictional.</p>
         <p class="footer-links"><a href="index.html">Home</a> <a href="auction.html">Captain room</a> <a href="admin.html">Organizer</a> <a href="https://www.relanto.ai" target="_blank" rel="noopener noreferrer">relanto.ai</a></p>
       </div>`;
   }

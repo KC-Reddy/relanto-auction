@@ -1,8 +1,8 @@
-/* Relanto Auction mail service. Deploy as a web app (Execute as: Me, Access: Anyone).
+/* Relanto Cricket League mail service. Deploy as a web app (Execute as: Me, Access: Anyone).
    Script Properties to set: ADMIN_KEY (a long random string you also type into the admin page).
    Public type: registration. Admin types (need ADMIN_KEY): approved, sold, unsold. */
 
-var SENDER_NAME = "Relanto Auction";
+var SENDER_NAME = "Relanto Cricket League";
 var ADMIN_TYPES = { approved: 1, sold: 1, unsold: 1 };
 var EMAIL_RE = /^[A-Za-z0-9._%+\-]+@[A-Za-z0-9\-]+(\.[A-Za-z0-9\-]+)*\.[A-Za-z]{2,}$/;
 

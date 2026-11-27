@@ -19,7 +19,7 @@ Photos are stored inside the player records (about 320px JPEG), so no paid Stora
 
 ## 2. Emails (Apps Script)
 
-1. Go to script.google.com > New project. Name it Relanto Auction Mail.
+1. Go to script.google.com > New project. Name it Relanto Cricket League Mail.
 2. Paste `apps-script/Code.gs` into Code.gs. Add a file named Templates and paste `apps-script/Templates.gs`.
 3. Project settings > Script properties > add `ADMIN_KEY` with a long random value.
 4. Run `testSendToMe` once and approve the permissions. You get one test email.
@@ -27,7 +27,7 @@ Photos are stored inside the player records (about 320px JPEG), so no paid Stora
 6. In `js/config.js` set `MAIL_ENDPOINT` to that URL and `SITE_URL` to `https://kc-reddy.github.io/relanto-auction`.
 7. In the admin page, Emails panel, type the same ADMIN_KEY. It stays in that tab only.
 
-Mail comes from the Gmail account that owns the script, shown as "Relanto Auction". A free Gmail account can send about 100 mails a day, enough for 25 players. To use a company mailbox later, deploy the script from that account.
+Mail comes from the Gmail account that owns the script, shown as "Relanto Cricket League". A free Gmail account can send about 100 mails a day, enough for 25 players. To use a company mailbox later, deploy the script from that account.
 
 Preview the emails without sending: `npm run preview-emails`, then open `email-preview/`.
 
@@ -38,7 +38,7 @@ The repo has to be public on a free plan. Nothing secret is in it: Firebase web 
 ```
 git init
 git add .
-git commit -m "Relanto Auction"
+git commit -m "Relanto Cricket League"
 git branch -M main
 git remote add origin https://github.com/KC-Reddy/relanto-auction.git
 git push -u origin main

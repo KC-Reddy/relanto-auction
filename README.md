@@ -1,4 +1,4 @@
-# Relanto Auction
+# Relanto Cricket League
 
 Cricket player auction for the office. Players register, two captains bid with fictional rupees, and players get picked into two teams.
 
