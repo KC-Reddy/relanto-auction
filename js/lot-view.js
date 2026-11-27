@@ -4,7 +4,8 @@ import { h } from "./layout.js";
 import { inr, mmss } from "./format.js";
 import { timeLeftMs, nextBid } from "./auction-logic.js";
 import { CATEGORIES } from "./constants.js";
-import { fx, confetti } from "./motion.js";
+import { fx } from "./motion.js";
+import { bowled } from "./cricket-fx.js";
 
 /* Turn a string like "₹2,25,000" into scoreboard tiles. Only rebuilds when the text changes. */
 export function setTiles(el, text) {
@@ -143,9 +144,7 @@ export function createLotView(root, { big = false } = {}) {
       fx.thump(root);
       fx.slam(stamp.querySelector(".stamp-word"));
       if (big) {
-        const x = result.team === "team2" ? window.innerWidth * 0.62 : window.innerWidth * 0.38;
-        confetti({ x, y: window.innerHeight * 0.55, count: 110, spread: 1.2, power: 1.1 });
-        confetti({ x: window.innerWidth - x, y: window.innerHeight * 0.55, count: 70, spread: 1.2 });
+        bowled();
       }
     } else {
       fx.slideUp(stamp.querySelector(".stamp-word"), 0, 24);

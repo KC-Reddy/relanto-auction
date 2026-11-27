@@ -1,7 +1,8 @@
 /* Premium layer: light, cursor, spotlight, scramble, intro curtain, and the register button that teases.
    Visual only. It never touches data or rules, and every effect is skipped for reduced motion. */
 
-import { motionOn, confetti } from "./motion.js";
+import { motionOn } from "./motion.js";
+import { flick } from "./cricket-fx.js";
 
 const page = (location.pathname.split("/").pop() || "index.html").toLowerCase();
 const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
@@ -96,13 +97,13 @@ function scrambles() {
   }
 }
 
-/* ---------- button press: a small burst of paper ---------- */
+/* ---------- button press: a ball flicked off the button ---------- */
 function clickBurst() {
   if (!motionOn || isAdmin) return;
   document.addEventListener("click", (e) => {
     const b = e.target.closest && e.target.closest(".btn-primary");
     if (!b || b.disabled || e.detail === 0) return;
-    confetti({ x: e.clientX, y: e.clientY, count: 16, spread: 2, power: 0.5 });
+    flick({ x: e.clientX, y: e.clientY });
   });
 }
 

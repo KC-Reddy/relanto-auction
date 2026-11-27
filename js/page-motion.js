@@ -1,7 +1,8 @@
 /* Motion for the form and data pages (register, results, organizer).
    Every effect here is optional: if the libraries do not load, the pages work unchanged. */
 
-import { loadMotion, headerMotion, smoothScroll, fx, confetti, magnetic, motionOn } from "./motion.js";
+import { loadMotion, headerMotion, smoothScroll, fx, magnetic, motionOn } from "./motion.js";
+import { six } from "./cricket-fx.js";
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -68,12 +69,11 @@ function registerForm(gsap) {
   new MutationObserver(() => { if (preview.classList.contains("has-photo")) fx.pop(preview); })
     .observe(preview, { attributes: true, attributeFilter: ["class"] });
 
-  /* success: confetti from the heading */
+  /* success: a six over the roof */
   const done = $("#done");
   new MutationObserver(() => {
     if (done.hidden) return;
-    const h2 = $("h2", done).getBoundingClientRect();
-    confetti({ x: h2.left + 90, y: h2.top + 10, count: 120, spread: 1.4, power: 1.1 });
+    six();
   }).observe(done, { attributes: true, attributeFilter: ["hidden"] });
 }
 
