@@ -26,7 +26,6 @@ export function renderChrome(active) {
     footer.className = "site-footer";
     footer.innerHTML = `
       <div class="wrap footer-row">
-        <a class="co-logo co-logo-foot" href="https://www.relanto.ai" target="_blank" rel="noopener noreferrer" aria-label="Relanto"><img src="assets/relanto-logo.svg" alt="Relanto, Reimagining AI" width="394" height="151"></a>
         <p class="footer-brand"><strong>Relanto</strong> Cricket League. An internal cricket event for the people of Relanto. All amounts shown are fictional.</p>
         <p class="footer-links"><a href="index.html">Home</a> <a href="auction.html">Captain room</a> <a href="admin.html">Organizer</a> <a href="https://www.relanto.ai" target="_blank" rel="noopener noreferrer">relanto.ai</a></p>
       </div>`;
