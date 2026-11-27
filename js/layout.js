@@ -16,7 +16,6 @@ export function renderChrome(active) {
     header.innerHTML = `
       <div class="wrap">
         <a class="brand" href="index.html">${BALL}Relanto Cricket League</a>
-        <a class="co-logo co-logo-head" href="https://www.relanto.ai" target="_blank" rel="noopener noreferrer" aria-label="Relanto"><img src="assets/relanto-wordmark.svg" alt="Relanto" width="394" height="106"></a>
         <nav class="nav" aria-label="Main">
           ${LINKS.map(([href, label]) => `<a href="${href}"${href === active ? ' aria-current="page"' : ""}>${label}</a>`).join("")}
         </nav>
